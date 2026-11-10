@@ -44,6 +44,68 @@
       <line x1="1292" y1="6" x2="1267" y2="38" stroke="#00e5ff" stroke-width="2" stroke-opacity="0.7" />
       <line x1="1284" y1="6" x2="1259" y2="38" stroke="#00e5ff" stroke-width="1" stroke-opacity="0.4" />
 
+      <!-- 标题下方科技底座折角切线流光轨迹与光束 -->
+      <!-- 左右折角切线底轨 -->
+      <path
+        d="M 960 42 H 648 L 618 4 L 590 36 H 0"
+        stroke="rgba(0, 229, 255, 0.2)"
+        stroke-width="1.2"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <path
+        d="M 960 42 H 1272 L 1302 4 L 1330 36 H 1920"
+        stroke="rgba(0, 229, 255, 0.2)"
+        stroke-width="1.2"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <!-- 左向流光外层青光束与内层白核 -->
+      <path
+        class="tech-stream-beam"
+        pathLength="1000"
+        d="M 960 42 H 648 L 618 4 L 590 36 H 0"
+        stroke="#00e5ff"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <path
+        class="tech-stream-core"
+        pathLength="1000"
+        d="M 960 42 H 648 L 618 4 L 590 36 H 0"
+        stroke="#ffffff"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <!-- 右向流光外层青光束与内层白核 -->
+      <path
+        class="tech-stream-beam"
+        pathLength="1000"
+        d="M 960 42 H 1272 L 1302 4 L 1330 36 H 1920"
+        stroke="#00e5ff"
+        stroke-width="2.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <path
+        class="tech-stream-core"
+        pathLength="1000"
+        d="M 960 42 H 1272 L 1302 4 L 1330 36 H 1920"
+        stroke="#ffffff"
+        stroke-width="1.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+      />
+      <!-- 中心源点能量光斑 -->
+      <circle cx="960" cy="42" r="5" fill="#00e5ff" fill-opacity="0.6" class="stream-center-halo" />
+      <circle cx="960" cy="42" r="2.5" fill="#ffffff" class="stream-center-dot" />
+
       <!-- 底部导航分割发光底线 -->
       <line x1="0" y1="77" x2="1920" y2="77" stroke="url(#cyanLineGrad)" stroke-width="1.2" />
     </svg>
@@ -104,11 +166,15 @@
 
       <!-- 右侧：天气、日期时间、管理员、全屏按钮 -->
       <div class="flex items-center justify-end gap-5 w-[560px] text-xs text-[#bce3ff]">
-        <div class="flex items-center gap-1.5">
+        <div
+          class="flex items-center gap-1.5 cursor-pointer hover:text-[#00e5ff] transition-colors"
+          :title="`黄平县重安镇实时气象 · 湿度 ${weatherState.humidity}% · ${weatherState.windDir} ${weatherState.windSpeed}m/s`"
+          @click="refreshWeather"
+        >
           <svg class="w-4 h-4 text-[#fbbf24]" viewBox="0 0 24 24" fill="currentColor">
             <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" />
           </svg>
-          <span>24℃ 多云</span>
+          <span>{{ weatherState.locationName }} {{ weatherState.temp }}℃ {{ weatherState.weatherText }}</span>
         </div>
 
         <div class="font-mono text-[#9cc5eb] tracking-wider">
@@ -195,6 +261,7 @@ import {
   Setting
 } from '@element-plus/icons-vue'
 import { FARM_LIST, NAV_ITEMS } from '@/mock/dashboardData'
+import { useWeather } from '@/services/weather'
 
 defineProps<{
   currentFarmId: string
@@ -206,6 +273,7 @@ const emit = defineEmits<{
 }>()
 
 const route = useRoute()
+const { weatherState, refreshWeather } = useWeather()
 const searchKeyword = ref('')
 const currentTimeStr = ref('2024-05-20 10:30:45')
 
@@ -249,4 +317,79 @@ onBeforeUnmount(() => {
   if (timer) clearInterval(timer)
 })
 </script>
+
+<style scoped>
+/* 折角切线流光外层青光束 */
+.tech-stream-beam {
+  stroke-dasharray: 180 1000;
+  filter: drop-shadow(0 0 5px #00e5ff) drop-shadow(0 0 10px #00e5ff);
+  animation: techStreamMove 2.8s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+/* 折角切线流光内层白光核 */
+.tech-stream-core {
+  stroke-dasharray: 100 1000;
+  animation: techStreamMove 2.8s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+}
+
+/* 沿折角切线自中心向两侧推进动画 */
+@keyframes techStreamMove {
+  0% {
+    stroke-dashoffset: 180;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -1000;
+    opacity: 0;
+  }
+}
+
+/* 中心源点高光核心 */
+.stream-center-dot {
+  filter: drop-shadow(0 0 4px #00e5ff);
+  animation: centerDotPulse 2.8s ease-in-out infinite;
+}
+
+/* 中心源点扩散光晕 */
+.stream-center-halo {
+  filter: drop-shadow(0 0 8px #00e5ff);
+  animation: centerHaloPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes centerDotPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.85);
+    transform-origin: 960px 42px;
+  }
+  20%,
+  45% {
+    opacity: 1;
+    transform: scale(1.25);
+    transform-origin: 960px 42px;
+  }
+}
+
+@keyframes centerHaloPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.65);
+    transform-origin: 960px 42px;
+  }
+  20%,
+  45% {
+    opacity: 0.85;
+    transform: scale(1.4);
+    transform-origin: 960px 42px;
+  }
+}
+</style>
 

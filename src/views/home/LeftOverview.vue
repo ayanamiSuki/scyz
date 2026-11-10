@@ -1,5 +1,5 @@
 <template>
-  <PanelCard title="园区总览" custom-class="h-[224px]" body-class="px-3 py-2.5">
+  <PanelCard title="基地总览" custom-class="h-[232px]" body-class="px-3 py-2.5">
     <div class="grid grid-cols-2 grid-rows-3 gap-x-2 gap-y-2.5 h-full items-center">
       <div
         v-for="item in data"
@@ -13,7 +13,7 @@
           </div>
           <div
             v-if="item.key === 'species'"
-            class="text-[12px] font-semibold text-[#e6f4ff] truncate"
+            class="text-[13px] font-semibold text-[#e6f4ff] truncate"
             :title="String(item.value)"
           >
             {{ item.value }}
@@ -39,4 +39,3 @@ defineProps<{
   data: OverviewItem[]
 }>()
 </script>
-

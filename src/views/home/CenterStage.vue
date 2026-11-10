@@ -16,7 +16,7 @@
     <div class="absolute left-3.5 top-3 z-20 flex items-center gap-2 pointer-events-none">
       <div class="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#051b3b]/80 border border-[#00c6ff]/35 backdrop-blur-sm text-[11px] text-[#bfe3ff]">
         <span class="w-2 h-2 rounded-full bg-[#00e5ff] animate-pulse" />
-        <span>3D 实时孪生引擎</span>
+        <span>3D 实景孪生引擎</span>
         <span class="text-[#00e5ff]/60">|</span>
         <span class="text-[#7da8d6]">拖拽旋转 · 滚轮缩放 · 点击点位聚焦</span>
       </div>
@@ -67,16 +67,16 @@
           <circle cx="12" cy="12" r="9" stroke-dasharray="3 3" />
           <circle cx="12" cy="12" r="4" />
         </svg>
-        <span>脉冲光效</span>
+        <span>循环水光效</span>
       </button>
     </div>
 
-    <!-- 画面中下方：当前养殖场名称铭牌 -->
+    <!-- 画面中下方：当前养殖基地名称铭牌 -->
     <div
-      class="absolute left-1/2 bottom-3.5 -translate-x-1/2 z-10 px-4 py-1 rounded bg-[#051b3b]/80 border border-[#00c6ff]/40 backdrop-blur-sm text-[14px] font-semibold text-[#d8f0ff] tracking-wider pointer-events-none"
+      class="absolute left-1/2 bottom-3.5 -translate-x-1/2 z-10 px-4 py-1 rounded bg-[#051b3b]/80 border border-[#00c6ff]/40 backdrop-blur-sm text-[13px] font-semibold text-[#d8f0ff] tracking-wider pointer-events-none"
       style="box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);"
     >
-      {{ farmName }} · 3D 数字孪生工厂
+      {{ farmName }} · 陆基循环水 3D 孪生基地
     </div>
 
     <!-- 右下角：公网安备与 ICP 备案信息 -->
@@ -103,7 +103,7 @@
       </a>
     </div>
 
-    <!-- 10个孪生点位交互标记（3D 空间坐标实时锚定投影） -->
+    <!-- 孪生点位交互标记（3D 空间坐标实时锚定投影） -->
     <div
       v-for="marker in markers"
       v-show="projectedMarkers[marker.id]?.visible"
@@ -124,31 +124,25 @@
             'ring-2 ring-[#00e5ff] bg-[#006699]/90 scale-110': activeMarker?.id === marker.id
           }"
         >
-          <!-- 网箱群图标 -->
+          <!-- 养殖车间/虾池图标 -->
           <svg v-if="marker.type === 'cage'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <ellipse cx="12" cy="8" rx="7" ry="3" />
-            <path d="M5 8v8c0 1.7 3.1 3 7 3s7-1.3 7-3V8" />
-            <path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" />
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="M3 10h18M9 5v14M15 5v14" />
           </svg>
-          <!-- 设备舱图标 -->
+          <!-- 循环水处理图标 -->
           <svg v-else-if="marker.type === 'cabin'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <rect x="4" y="6" width="16" height="12" rx="2" />
             <path d="M8 10h8M8 14h5" />
           </svg>
-          <!-- 监控中心图标 -->
+          <!-- 综合管理中控楼图标 -->
           <svg v-else-if="marker.type === 'monitor'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M12 3l7 4v6c0 4.5-3 7.5-7 8-4-.5-7-3.5-7-8V7l7-4z" />
             <circle cx="12" cy="11" r="2.5" />
           </svg>
-          <!-- 饲料仓库图标 -->
+          <!-- 拌料投喂站图标 -->
           <svg v-else-if="marker.type === 'warehouse'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 10l9-6 9 6v10H3V10z" />
             <path d="M9 20v-6h6v6" />
-          </svg>
-          <!-- 休闲平台图标 -->
-          <svg v-else-if="marker.type === 'leisure'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 3c5 0 9 3.5 9 8H3c0-4.5 4-8 9-8z" />
-            <path d="M12 11v9M9 20h6" />
           </svg>
           <!-- 增氧机图标 -->
           <svg v-else-if="marker.type === 'aerator'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -160,14 +154,9 @@
             <rect x="3" y="7" width="13" height="10" rx="2" />
             <polygon points="16,10 21,7 21,17 16,14" />
           </svg>
-          <!-- 环境平台图标 -->
-          <svg v-else-if="marker.type === 'env'" class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M12 3v14M7 10l5-4 5 4M5 19c2-1.5 4.5-1.5 7 0s5 1.5 7 0" />
-          </svg>
-          <!-- 投喂平台图标 -->
+          <!-- 水质监测站图标 -->
           <svg v-else class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="8" />
-            <path d="M12 8v8M8 12h8" />
+            <path d="M12 3v14M7 10l5-4 5 4M5 19c2-1.5 4.5-1.5 7 0s5 1.5 7 0" />
           </svg>
         </div>
 
@@ -193,7 +182,7 @@
     <transition name="el-fade-in-linear">
       <div
         v-if="activeMarker"
-        class="absolute right-4 top-4 z-30 w-[265px] rounded bg-[#061d40]/95 border border-[#00e5ff]/60 p-3 shadow-2xl backdrop-blur-md"
+        class="absolute right-4 top-4 z-30 w-[272px] rounded bg-[#061d40]/95 border border-[#00e5ff]/60 p-3 shadow-2xl backdrop-blur-md"
       >
         <div class="flex items-center justify-between border-b border-[#00a8ff]/25 pb-2 mb-2">
           <div class="flex items-center gap-2">
@@ -241,72 +230,62 @@ const containerRef = ref<HTMLDivElement | null>(null)
 const canvasWrapRef = ref<HTMLDivElement | null>(null)
 
 const activeMarker = ref<StageMarker | null>(null)
-const isAutoRotate = ref(true)
+const isAutoRotate = ref(false)
 const showPulseEffect = ref(true)
 
 // 每个点位实时投影后的屏幕像素坐标
 const projectedMarkers = reactive<Record<string, { x: number; y: number; visible: boolean }>>({})
 
-// 10个点位对应的 3D 世界坐标与最佳观测相机偏移
+// 8个陆基基地点位对应的 3D 世界坐标与最佳聚焦相机位置（严格对齐实景布局）
 const MARKER_3D_CONFIG: Record<
   string,
   { anchor: THREE.Vector3; camOffset: THREE.Vector3; radius: number }
 > = {
-  'm-cage-north': {
-    anchor: new THREE.Vector3(2, 4.5, -22),
-    camOffset: new THREE.Vector3(18, 20, 8),
-    radius: 15
+  'm-greenhouse-main': {
+    anchor: new THREE.Vector3(-2, 7.2, -14),
+    camOffset: new THREE.Vector3(0, 32, 26),
+    radius: 16
   },
-  'm-cage-south': {
-    anchor: new THREE.Vector3(-24, 4.5, 4),
-    camOffset: new THREE.Vector3(-4, 18, 28),
-    radius: 15
+  'm-front-tanks': {
+    anchor: new THREE.Vector3(-14, 3.2, 21),
+    camOffset: new THREE.Vector3(-16, 22, 48),
+    radius: 11
   },
-  'm-cabin': {
-    anchor: new THREE.Vector3(0, 8.2, 6),
-    camOffset: new THREE.Vector3(14, 15, 24),
+  'm-office-building': {
+    anchor: new THREE.Vector3(17, 7.8, 12),
+    camOffset: new THREE.Vector3(32, 22, 42),
+    radius: 9
+  },
+  'm-ras-room': {
+    anchor: new THREE.Vector3(-12, 3.8, 8.5),
+    camOffset: new THREE.Vector3(-14, 20, 34),
+    radius: 8
+  },
+  'm-feeder-station': {
+    anchor: new THREE.Vector3(12, 5.8, -4),
+    camOffset: new THREE.Vector3(30, 22, 22),
     radius: 7
   },
-  'm-monitor': {
-    anchor: new THREE.Vector3(-11, 12.5, 13),
-    camOffset: new THREE.Vector3(-24, 18, 30),
-    radius: 6
-  },
-  'm-warehouse': {
-    anchor: new THREE.Vector3(-3, 9.5, 16),
-    camOffset: new THREE.Vector3(-14, 16, 34),
-    radius: 6
-  },
-  'm-leisure': {
-    anchor: new THREE.Vector3(9, 6.5, 17),
-    camOffset: new THREE.Vector3(22, 14, 34),
+  'm-aerator-station': {
+    anchor: new THREE.Vector3(-26, 5.2, -8),
+    camOffset: new THREE.Vector3(-44, 22, 16),
     radius: 7
   },
-  'm-aerator': {
-    anchor: new THREE.Vector3(17, 3.8, 13),
-    camOffset: new THREE.Vector3(30, 14, 28),
+  'm-env-station': {
+    anchor: new THREE.Vector3(1, 4.5, 4.5),
+    camOffset: new THREE.Vector3(10, 18, 28),
     radius: 6
   },
-  'm-camera': {
-    anchor: new THREE.Vector3(25, 10.5, 9),
-    camOffset: new THREE.Vector3(40, 16, 24),
+  'm-camera-east': {
+    anchor: new THREE.Vector3(31, 6.5, 16),
+    camOffset: new THREE.Vector3(48, 20, 36),
     radius: 5
-  },
-  'm-env': {
-    anchor: new THREE.Vector3(34, 6.5, 1),
-    camOffset: new THREE.Vector3(48, 15, 18),
-    radius: 5
-  },
-  'm-feeder': {
-    anchor: new THREE.Vector3(24, 7.5, -10),
-    camOffset: new THREE.Vector3(42, 16, 8),
-    radius: 7
   }
 }
 
-// 默认全局鸟瞰视角
-const DEFAULT_CAM_POS = new THREE.Vector3(0, 42, 68)
-const DEFAULT_TARGET = new THREE.Vector3(2, 0, -1)
+// 默认全局鸟瞰视角（复刻无人机航拍图正前偏高俯视角度）
+const DEFAULT_CAM_POS = new THREE.Vector3(0, 44, 68)
+const DEFAULT_TARGET = new THREE.Vector3(0, 1, 2)
 
 let scene: THREE.Scene | null = null
 let camera: THREE.PerspectiveCamera | null = null
@@ -316,14 +295,9 @@ let animationFrameId = 0
 let resizeObserver: ResizeObserver | null = null
 
 // 动画相关引用
-let oceanGeometry: THREE.PlaneGeometry | null = null
-let oceanBaseZ: Float32Array | null = null
 let pulseRings: THREE.Mesh[] = []
-let radarDishGroup: THREE.Group | null = null
-let windBladesGroup: THREE.Group | null = null
-let cameraScanCone: THREE.Mesh | null = null
 let bubbleParticles: THREE.Points | null = null
-let fishParticles: THREE.Points | null = null
+let blowerFans: THREE.Object3D[] = []
 let flowPulses: { mesh: THREE.Mesh; curve: THREE.CatmullRomCurve3; progress: number; speed: number }[] = []
 let highlightGroup: THREE.Group | null = null
 let highlightRingOuter: THREE.Mesh | null = null
@@ -340,7 +314,7 @@ let flyState: {
   targetLookAt: DEFAULT_TARGET.clone()
 }
 
-// 创建径向发光贴图（用于粒子与光环）
+// 创建径向发光贴图（用于曝气气泡与流光粒子）
 function createGlowTexture(colorHex = '#00e5ff'): THREE.CanvasTexture {
   const canvas = document.createElement('canvas')
   canvas.width = 64
@@ -355,588 +329,655 @@ function createGlowTexture(colorHex = '#00e5ff'): THREE.CanvasTexture {
   return new THREE.CanvasTexture(canvas)
 }
 
-// 构建深水抗风浪圆形养殖网箱单元
-function createCageUnit(radius = 4.2, depth = 6.5): THREE.Group {
+// 创建波浪纹理贴图（用于大棚波纹顶板真实质感）
+function createCorrugatedRoofTexture(baseColor: string, stripeColor: string): THREE.CanvasTexture {
+  const canvas = document.createElement('canvas')
+  canvas.width = 128
+  canvas.height = 128
+  const ctx = canvas.getContext('2d')!
+  ctx.fillStyle = baseColor
+  ctx.fillRect(0, 0, 128, 128)
+  ctx.fillStyle = stripeColor
+  for (let y = 0; y < 128; y += 8) {
+    ctx.fillRect(0, y, 128, 3)
+  }
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.wrapS = THREE.RepeatWrapping
+  tex.wrapT = THREE.RepeatWrapping
+  tex.repeat.set(4, 6)
+  return tex
+}
+
+/**
+ * 构建方形钢筋混凝土对虾养殖池矩阵（用于前区露天池群与大棚内部池群）
+ * 还原实景图：灰白色厚混凝土池壁、十字走道、池底中心排污圆孔、池内水体
+ */
+function createConcreteTankMatrix(options: {
+  rows: number
+  cols: number
+  cellW: number
+  cellD: number
+  wallH: number
+  wallT: number
+  hasWater: boolean
+  waterOpacity?: number
+}): THREE.Group {
+  const { rows, cols, cellW, cellD, wallH, wallT, hasWater, waterOpacity = 0.45 } = options
   const group = new THREE.Group()
+  const totalW = cols * cellW
+  const totalD = rows * cellD
 
-  // 外圈双层高密度浮管
-  const outerRingGeo = new THREE.TorusGeometry(radius, 0.24, 12, 48)
-  outerRingGeo.rotateX(Math.PI / 2)
-  const ringMat = new THREE.MeshStandardMaterial({
-    color: 0x0b3c68,
+  // 混凝土池底板
+  const floorGeo = new THREE.BoxGeometry(totalW + wallT, 0.25, totalD + wallT)
+  const concreteMat = new THREE.MeshStandardMaterial({
+    color: 0xb8c4cf,
+    roughness: 0.78,
+    metalness: 0.12
+  })
+  const floorWallMat = new THREE.MeshStandardMaterial({
+    color: 0xcbd5e1,
+    roughness: 0.68,
+    metalness: 0.15
+  })
+  const floorMesh = new THREE.Mesh(floorGeo, concreteMat)
+  floorMesh.position.y = 0.125
+  group.add(floorMesh)
+
+  // 横向池壁 (rows + 1 条)
+  const hWallGeo = new THREE.BoxGeometry(totalW + wallT, wallH, wallT)
+  for (let r = 0; r <= rows; r++) {
+    const wall = new THREE.Mesh(hWallGeo, floorWallMat)
+    wall.position.set(0, wallH / 2 + 0.2, -totalD / 2 + r * cellD)
+    group.add(wall)
+  }
+
+  // 纵向池壁 (cols + 1 条)
+  const vWallGeo = new THREE.BoxGeometry(wallT, wallH, totalD + wallT)
+  for (let c = 0; c <= cols; c++) {
+    const wall = new THREE.Mesh(vWallGeo, floorWallMat)
+    wall.position.set(-totalW / 2 + c * cellW, wallH / 2 + 0.2, 0)
+    group.add(wall)
+  }
+
+  // 每个方池内部细节：中心底排污口、斜角加固、水体
+  const drainGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.08, 12)
+  const drainMat = new THREE.MeshBasicMaterial({ color: 0x1e293b })
+  const waterGeo = new THREE.PlaneGeometry(cellW - wallT * 1.1, cellD - wallT * 1.1)
+  waterGeo.rotateX(-Math.PI / 2)
+  const waterMat = new THREE.MeshStandardMaterial({
+    color: 0x0369a1,
+    emissive: 0x023e68,
+    emissiveIntensity: 0.45,
+    roughness: 0.2,
     metalness: 0.5,
-    roughness: 0.3,
-    emissive: 0x004477,
-    emissiveIntensity: 0.35
-  })
-  const outerRing = new THREE.Mesh(outerRingGeo, ringMat)
-  outerRing.position.y = 0.25
-  group.add(outerRing)
-
-  const innerRingGeo = new THREE.TorusGeometry(radius * 0.86, 0.16, 10, 48)
-  innerRingGeo.rotateX(Math.PI / 2)
-  const innerRingMat = new THREE.MeshStandardMaterial({
-    color: 0x00d8ff,
-    emissive: 0x00a8ff,
-    emissiveIntensity: 0.6,
-    roughness: 0.2
-  })
-  const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat)
-  innerRing.position.y = 0.32
-  group.add(innerRing)
-
-  // 网箱顶部护栏圈
-  const railGeo = new THREE.TorusGeometry(radius * 0.93, 0.06, 8, 40)
-  railGeo.rotateX(Math.PI / 2)
-  const railMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
-  const rail = new THREE.Mesh(railGeo, railMat)
-  rail.position.y = 0.95
-  group.add(rail)
-
-  // 水面投食器/监测浮球（网箱中心）
-  const centerPodGeo = new THREE.CylinderGeometry(0.65, 0.85, 1.1, 16)
-  const centerPodMat = new THREE.MeshStandardMaterial({
-    color: 0x1e3a5f,
-    metalness: 0.6,
-    roughness: 0.3,
-    emissive: 0x00e5ff,
-    emissiveIntensity: 0.25
-  })
-  const centerPod = new THREE.Mesh(centerPodGeo, centerPodMat)
-  centerPod.position.y = 0.55
-  group.add(centerPod)
-
-  // 十字走道栈桥
-  const walkwayGeo = new THREE.BoxGeometry(radius * 1.9, 0.12, 0.55)
-  const walkwayMat = new THREE.MeshStandardMaterial({
-    color: 0x164e78,
-    metalness: 0.4,
-    roughness: 0.6
-  })
-  const walkway = new THREE.Mesh(walkwayGeo, walkwayMat)
-  walkway.position.y = 0.38
-  group.add(walkway)
-
-  // 水下养殖网衣（半透明深蓝科技网格质感）
-  const netGeo = new THREE.CylinderGeometry(radius * 0.84, radius * 0.72, depth, 24, 4, true)
-  const netMat = new THREE.MeshBasicMaterial({
-    color: 0x00c6ff,
-    wireframe: true,
     transparent: true,
-    opacity: 0.22
+    opacity: waterOpacity
   })
-  const netMesh = new THREE.Mesh(netGeo, netMat)
-  netMesh.position.y = -depth / 2 + 0.2
-  group.add(netMesh)
 
-  // 水下内胆柔和发光水体体积
-  const waterColGeo = new THREE.CylinderGeometry(radius * 0.8, radius * 0.68, depth * 0.9, 24)
-  const waterColMat = new THREE.MeshBasicMaterial({
-    color: 0x0077be,
-    transparent: true,
-    opacity: 0.14,
-    side: THREE.DoubleSide
-  })
-  const waterCol = new THREE.Mesh(waterColGeo, waterColMat)
-  waterCol.position.y = -depth / 2 + 0.2
-  group.add(waterCol)
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cx = -totalW / 2 + (c + 0.5) * cellW
+      const cz = -totalD / 2 + (r + 0.5) * cellD
+
+      // 池底中央排污口（还原航拍图中每个水泥方池正中的黑点）
+      const drain = new THREE.Mesh(drainGeo, drainMat)
+      drain.position.set(cx, 0.27, cz)
+      group.add(drain)
+
+      if (hasWater) {
+        const water = new THREE.Mesh(waterGeo, waterMat)
+        water.position.set(cx, wallH * 0.68, cz)
+        group.add(water)
+      }
+    }
+  }
 
   return group
 }
 
-// 构建整座海上水产养殖工厂 3D 场景
-function buildAquacultureFactory(sceneInstance: THREE.Scene) {
-  // 1. 动态海面 + 科技网格层
-  oceanGeometry = new THREE.PlaneGeometry(240, 240, 96, 96)
-  oceanGeometry.rotateX(-Math.PI / 2)
-  const posAttr = oceanGeometry.attributes.position
-  oceanBaseZ = new Float32Array(posAttr.count)
-  for (let i = 0; i < posAttr.count; i++) {
-    oceanBaseZ[i] = posAttr.getY(i)
-  }
-
-  const oceanMat = new THREE.MeshStandardMaterial({
-    color: 0x032245,
-    emissive: 0x011024,
-    roughness: 0.22,
-    metalness: 0.75,
-    flatShading: true
+/**
+ * 构建整座“重安对虾养殖示范基地”实景 3D 孪生场景
+ * 1:1 还原航拍图：
+ * - 后方/中部：大跨度波浪拱形钢结构保温养殖大棚（深灰主体+右侧银白顶棚+前排钢桁架透视区）
+ * - 中间过渡区：深水沉淀与循环水管道沟槽
+ * - 左前方：3×9 露天钢筋混凝土方形虾池矩阵（浅灰水泥池壁+池心排污口）
+ * - 右前方：两层混凝土综合管理中控楼（一层门廊立柱+二层走廊与方窗）+ 前方硬化广场与围栏
+ * - 周边地貌：右侧沿溪流砂石路、后方生态水塘与山林、远景6根高架桥墩
+ */
+function buildChonganShrimpBase(sceneInstance: THREE.Scene) {
+  // 1. 山谷大地基底与数字孪生科技网格
+  const groundGeo = new THREE.PlaneGeometry(260, 260)
+  groundGeo.rotateX(-Math.PI / 2)
+  const groundMat = new THREE.MeshStandardMaterial({
+    color: 0x081a2c,
+    roughness: 0.88,
+    metalness: 0.15
   })
-  const oceanMesh = new THREE.Mesh(oceanGeometry, oceanMat)
-  oceanMesh.receiveShadow = true
-  sceneInstance.add(oceanMesh)
+  const groundMesh = new THREE.Mesh(groundGeo, groundMat)
+  groundMesh.position.y = -0.2
+  sceneInstance.add(groundMesh)
 
-  // 海面数字孪生坐标网格
-  const gridHelper = new THREE.GridHelper(220, 55, 0x00a8ff, 0x07335c)
-  gridHelper.position.y = 0.08
+  const gridHelper = new THREE.GridHelper(220, 55, 0x00a8ff, 0x072b4d)
+  gridHelper.position.y = -0.12
   const gridMat = gridHelper.material as THREE.Material
   gridMat.transparent = true
-  gridMat.opacity = 0.26
+  gridMat.opacity = 0.25
   sceneInstance.add(gridHelper)
 
-  // 2. 底部周期扩散脉冲扫描环（3层交替扩散）
-  pulseRings = []
-  for (let i = 0; i < 3; i++) {
-    const pGeo = new THREE.RingGeometry(1.5, 2.3, 64)
-    pGeo.rotateX(-Math.PI / 2)
-    const pMat = new THREE.MeshBasicMaterial({
-      color: 0x00e5ff,
-      transparent: true,
-      opacity: 0.55,
-      side: THREE.DoubleSide,
-      depthWrite: false
-    })
-    const pMesh = new THREE.Mesh(pGeo, pMat)
-    pMesh.position.set(0, 0.16, 4)
-    pMesh.userData = { phase: i / 3 }
-    sceneInstance.add(pMesh)
-    pulseRings.push(pMesh)
-  }
-
-  // 3. 北区深水抗风浪网箱群 (m-cage-north: 2x3 阵列)
-  const northGroup = new THREE.Group()
-  northGroup.position.set(2, 0, -22)
-  const northCols = 3
-  const northRows = 2
-  const spacingX = 11.5
-  const spacingZ = 11.0
-
-  for (let r = 0; r < northRows; r++) {
-    for (let c = 0; c < northCols; c++) {
-      const cage = createCageUnit(4.3, 7)
-      cage.position.set((c - 1) * spacingX, 0, (r - 0.5) * spacingZ)
-      northGroup.add(cage)
-    }
-  }
-  // 北区中央连接浮桥
-  const northBridgeGeo = new THREE.BoxGeometry(spacingX * 2.4, 0.25, 1.4)
-  const bridgeMat = new THREE.MeshStandardMaterial({
-    color: 0x0e416c,
-    emissive: 0x004477,
-    emissiveIntensity: 0.4,
-    roughness: 0.4
+  // 2. 基地硬化混凝土总台基
+  const compoundPadGeo = new THREE.BoxGeometry(66, 0.5, 64)
+  const compoundPadMat = new THREE.MeshStandardMaterial({
+    color: 0x475569,
+    roughness: 0.75,
+    metalness: 0.15
   })
-  const northBridge = new THREE.Mesh(northBridgeGeo, bridgeMat)
-  northBridge.position.set(0, 0.35, 0)
-  northGroup.add(northBridge)
-  sceneInstance.add(northGroup)
+  const compoundPad = new THREE.Mesh(compoundPadGeo, compoundPadMat)
+  compoundPad.position.set(0, 0.05, 0)
+  sceneInstance.add(compoundPad)
 
-  // 4. 南区高密度智能网箱群 (m-cage-south: 2x3 阵列)
-  const southGroup = new THREE.Group()
-  southGroup.position.set(-24, 0, 4)
-  for (let r = 0; r < 2; r++) {
-    for (let c = 0; c < 3; c++) {
-      const cage = createCageUnit(3.8, 6)
-      cage.position.set((c - 1) * 9.8, 0, (r - 0.5) * 9.8)
-      southGroup.add(cage)
-    }
-  }
-  const southBridge = new THREE.Mesh(new THREE.BoxGeometry(22, 0.25, 1.3), bridgeMat)
-  southBridge.position.set(0, 0.35, 0)
-  southGroup.add(southBridge)
-  sceneInstance.add(southGroup)
+  // 台基外框科技流光线
+  const padEdge = new THREE.LineSegments(
+    new THREE.EdgesGeometry(compoundPadGeo),
+    new THREE.LineBasicMaterial({ color: 0x00c6ff, transparent: true, opacity: 0.5 })
+  )
+  padEdge.position.copy(compoundPad.position)
+  sceneInstance.add(padEdge)
 
-  // 5. 中央海上综合总控主平台（承载设备舱、监控中心、饲料仓库、休闲平台）
-  const mainPlatformGroup = new THREE.Group()
-  mainPlatformGroup.position.set(-1, 0, 12)
+  // 3. 后方主体：大跨度钢结构保温养殖大棚 (z: -30 ~ +6, x: -30 ~ +30)
+  const greenhouseGroup = new THREE.Group()
+  greenhouseGroup.position.set(0, 0.3, -12)
 
-  // 主甲板多层钢构基座
-  const deckGeo = new THREE.BoxGeometry(28, 1.4, 18)
-  const deckMat = new THREE.MeshStandardMaterial({
-    color: 0x0d2b4d,
+  // 3.1 大棚内部对虾养殖方池矩阵 (6排 × 12列 室内循环水虾池)
+  const indoorPools = createConcreteTankMatrix({
+    rows: 6,
+    cols: 12,
+    cellW: 4.8,
+    cellD: 5.4,
+    wallH: 1.65,
+    wallT: 0.22,
+    hasWater: true,
+    waterOpacity: 0.58
+  })
+  indoorPools.position.set(0, 0, 0)
+  greenhouseGroup.add(indoorPools)
+
+  // 3.2 钢结构立柱与轻钢桁架屋面系统
+  const steelMat = new THREE.MeshStandardMaterial({
+    color: 0xe2e8f0,
     metalness: 0.65,
-    roughness: 0.35
+    roughness: 0.3
   })
-  const deckMesh = new THREE.Mesh(deckGeo, deckMat)
-  deckMesh.position.y = 3.2
-  mainPlatformGroup.add(deckMesh)
+  const darkRoofTex = createCorrugatedRoofTexture('#263240', '#18222d')
+  const silverRoofTex = createCorrugatedRoofTexture('#cbd5e1', '#94a3b8')
 
-  // 主平台四周科技霓虹灯带边框
-  const deckEdgeGeo = new THREE.EdgesGeometry(deckGeo)
-  const deckEdgeMat = new THREE.LineBasicMaterial({ color: 0x00e5ff })
-  const deckEdge = new THREE.LineSegments(deckEdgeGeo, deckEdgeMat)
-  deckEdge.position.y = 3.2
-  mainPlatformGroup.add(deckEdge)
-
-  // 6根跨海导管架立柱 + 水线发光防撞环
-  const legOffsets = [
-    [-11.5, -7],
-    [0, -7],
-    [11.5, -7],
-    [-11.5, 7],
-    [0, 7],
-    [11.5, 7]
-  ]
-  const legGeo = new THREE.CylinderGeometry(0.95, 1.15, 12, 16)
-  const legMat = new THREE.MeshStandardMaterial({ color: 0x16426b, metalness: 0.7, roughness: 0.3 })
-  legOffsets.forEach(([lx, lz]) => {
-    const leg = new THREE.Mesh(legGeo, legMat)
-    leg.position.set(lx, -2.5, lz)
-    mainPlatformGroup.add(leg)
-
-    // 水面发光环
-    const collarGeo = new THREE.TorusGeometry(1.25, 0.14, 10, 24)
-    collarGeo.rotateX(Math.PI / 2)
-    const collarMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-    const collar = new THREE.Mesh(collarGeo, collarMat)
-    collar.position.set(lx, 0.25, lz)
-    mainPlatformGroup.add(collar)
+  const darkRoofMat = new THREE.MeshStandardMaterial({
+    map: darkRoofTex,
+    color: 0x334155,
+    roughness: 0.45,
+    metalness: 0.55,
+    side: THREE.DoubleSide
+  })
+  const silverRoofMat = new THREE.MeshStandardMaterial({
+    map: silverRoofTex,
+    color: 0xe2e8f0,
+    roughness: 0.35,
+    metalness: 0.7,
+    side: THREE.DoubleSide
   })
 
-  // 5.1 设备舱与风光储微电网模块 (m-cabin)
-  const cabinGroup = new THREE.Group()
-  cabinGroup.position.set(1, 3.9, -5)
-  const cabinBoxGeo = new THREE.BoxGeometry(8.5, 3.2, 5.2)
-  const cabinBoxMat = new THREE.MeshStandardMaterial({
-    color: 0x133b63,
-    metalness: 0.6,
-    roughness: 0.3,
-    emissive: 0x052442
-  })
-  const cabinBox = new THREE.Mesh(cabinBoxGeo, cabinBoxMat)
-  cabinBox.position.y = 1.6
-  cabinGroup.add(cabinBox)
+  const bayCols = 9 // 9跨连栋波浪拱顶
+  const bayRows = 7 // 7排进深（前排第6排裸露钢桁架，还原实景图前缘透视结构）
+  const bayW = 6.4
+  const bayD = 4.8
+  const ghWidth = bayCols * bayW // 57.6
+  const ghDepth = bayRows * bayD // 33.6
+  const eaveH = 3.8
 
-  // 设备舱发光能量格栅与光伏顶板
-  const cabinWire = new THREE.LineSegments(
-    new THREE.EdgesGeometry(cabinBoxGeo),
-    new THREE.LineBasicMaterial({ color: 0x38bdf8 })
-  )
-  cabinWire.position.y = 1.6
-  cabinGroup.add(cabinWire)
+  // 钢结构立柱与纵向主梁
+  const pillarGeo = new THREE.BoxGeometry(0.22, eaveH, 0.22)
+  const longBeamGeo = new THREE.BoxGeometry(0.16, 0.24, ghDepth)
+  for (let c = 0; c <= bayCols; c++) {
+    const px = -ghWidth / 2 + c * bayW
+    const beam = new THREE.Mesh(longBeamGeo, steelMat)
+    beam.position.set(px, eaveH, 0)
+    greenhouseGroup.add(beam)
 
-  // 光伏阵列板
-  for (let i = -1; i <= 1; i++) {
-    const solarGeo = new THREE.BoxGeometry(2.3, 0.12, 3.8)
-    const solarMat = new THREE.MeshStandardMaterial({
-      color: 0x0284c7,
-      emissive: 0x005588,
-      emissiveIntensity: 0.5,
-      metalness: 0.85,
-      roughness: 0.15
-    })
-    const solarPanel = new THREE.Mesh(solarGeo, solarMat)
-    solarPanel.position.set(i * 2.6, 3.55, 0)
-    solarPanel.rotation.x = 0.22
-    cabinGroup.add(solarPanel)
+    for (let r = 0; r <= bayRows; r++) {
+      const pz = -ghDepth / 2 + r * bayD
+      const pillar = new THREE.Mesh(pillarGeo, steelMat)
+      pillar.position.set(px, eaveH / 2, pz)
+      greenhouseGroup.add(pillar)
+    }
   }
 
-  // 海上微电网风力发电机（带动态旋转叶片）
-  const turbineTower = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.22, 0.42, 8.5, 12),
-    new THREE.MeshStandardMaterial({ color: 0xd8f0ff, metalness: 0.5, roughness: 0.2 })
-  )
-  turbineTower.position.set(5.2, 4.2, -1.2)
-  cabinGroup.add(turbineTower)
-
-  windBladesGroup = new THREE.Group()
-  windBladesGroup.position.set(5.2, 8.4, -0.9)
-  const bladeGeo = new THREE.BoxGeometry(0.28, 3.6, 0.08)
-  bladeGeo.translate(0, 1.6, 0)
-  const bladeMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-  for (let b = 0; b < 3; b++) {
-    const blade = new THREE.Mesh(bladeGeo, bladeMat)
-    blade.rotation.z = (b * Math.PI * 2) / 3
-    windBladesGroup.add(blade)
+  // 横向钢桁架与檩条（特别是前排裸露钢架区 r = bayRows - 1）
+  const crossBeamGeo = new THREE.BoxGeometry(ghWidth, 0.22, 0.18)
+  for (let r = 0; r <= bayRows; r++) {
+    const pz = -ghDepth / 2 + r * bayD
+    const crossBeam = new THREE.Mesh(crossBeamGeo, steelMat)
+    crossBeam.position.set(0, eaveH, pz)
+    greenhouseGroup.add(crossBeam)
   }
-  cabinGroup.add(windBladesGroup)
-  mainPlatformGroup.add(cabinGroup)
 
-  // 5.2 监控中心塔楼 (m-monitor)
-  const monitorGroup = new THREE.Group()
-  monitorGroup.position.set(-10, 3.9, 1)
-  const towerBase = new THREE.Mesh(
-    new THREE.BoxGeometry(5.8, 5.2, 5.8),
-    new THREE.MeshStandardMaterial({ color: 0x103459, metalness: 0.65, roughness: 0.25 })
+  // 连排波浪拱形屋顶单元（前排留出裸露钢桁架与局部斜搭板，右侧第8跨使用银白板，1:1还原实景照片）
+  for (let r = 0; r < bayRows; r++) {
+    const cz = -ghDepth / 2 + (r + 0.5) * bayD
+    for (let c = 0; c < bayCols; c++) {
+      const cx = -ghWidth / 2 + (c + 0.5) * bayW
+
+      // 每一跨内部加上细钢屋架檩条（让前排未封顶区呈现照片里的白色密集网格钢架）
+      for (let s = -1; s <= 1; s++) {
+        const purlin = new THREE.Mesh(
+          new THREE.BoxGeometry(bayW * 0.96, 0.1, 0.1),
+          steelMat
+        )
+        purlin.position.set(cx, eaveH + 0.35 - Math.abs(s) * 0.15, cz + s * (bayD * 0.3))
+        greenhouseGroup.add(purlin)
+      }
+      for (let k = -2; k <= 2; k++) {
+        const rafter = new THREE.Mesh(
+          new THREE.BoxGeometry(0.08, 0.1, bayD * 0.96),
+          steelMat
+        )
+        rafter.position.set(cx + k * (bayW * 0.2), eaveH + 0.38 - Math.abs(k) * 0.08, cz)
+        greenhouseGroup.add(rafter)
+      }
+
+      // 判断是否铺设保温顶板：
+      // 前排 (r === bayRows - 1) 大部分裸露钢架，仅第2跨和最右侧银白跨铺设，完美复刻航拍图前缘！
+      const isFrontExposed = r === bayRows - 1 && c !== 2 && c !== bayCols - 1
+      // 右上角最后一跨的前两排也有部分裸露钢架
+      const isBackRightExposed = c === bayCols - 1 && r < 2
+
+      if (!isFrontExposed && !isBackRightExposed) {
+        // 创建微拱波浪形屋面板
+        const archGeo = new THREE.CylinderGeometry(
+          bayW * 0.56,
+          bayW * 0.56,
+          bayD * 0.98,
+          16,
+          1,
+          true,
+          -Math.PI * 0.32,
+          Math.PI * 0.64
+        )
+        archGeo.rotateX(Math.PI / 2)
+        // 右侧边跨 (c >= bayCols - 2) 局部采用银白反光板，其余采用深灰保温板
+        const useSilver = c === bayCols - 1 || (c === bayCols - 2 && r >= 2 && r <= 4)
+        const archMesh = new THREE.Mesh(archGeo, useSilver ? silverRoofMat : darkRoofMat)
+        archMesh.position.set(cx, eaveH - bayW * 0.24, cz)
+        archMesh.scale.set(1, 0.52, 1)
+        greenhouseGroup.add(archMesh)
+
+        // 拱顶科技描边线，增强数字孪生层次感
+        if (r % 2 === 0 && c % 2 === 0) {
+          const wire = new THREE.LineSegments(
+            new THREE.EdgesGeometry(archGeo),
+            new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.22 })
+          )
+          wire.position.copy(archMesh.position)
+          wire.scale.copy(archMesh.scale)
+          greenhouseGroup.add(wire)
+        }
+      }
+    }
+  }
+
+  // 大棚四周浅灰砖混围墙（前侧留出观察开口）
+  const sideWallGeo = new THREE.BoxGeometry(0.35, eaveH * 0.85, ghDepth)
+  const leftWall = new THREE.Mesh(sideWallGeo, steelMat)
+  leftWall.position.set(-ghWidth / 2 - 0.2, eaveH * 0.42, 0)
+  greenhouseGroup.add(leftWall)
+
+  sceneInstance.add(greenhouseGroup)
+
+  // 4. 中间过渡区：深水沉淀池与循环水处理管廊 (z: +6 ~ +11, x: -30 ~ +3)
+  const trenchGroup = new THREE.Group()
+  trenchGroup.position.set(-13.5, 0.3, 8.5)
+  const trenchPools = createConcreteTankMatrix({
+    rows: 1,
+    cols: 5,
+    cellW: 6.4,
+    cellD: 4.2,
+    wallH: 2.2,
+    wallT: 0.32,
+    hasWater: true,
+    waterOpacity: 0.78
+  })
+  trenchGroup.add(trenchPools)
+
+  // 管廊上方银色输水主管与斜撑桁架
+  const mainPipeGeo = new THREE.CylinderGeometry(0.22, 0.22, 32, 12)
+  mainPipeGeo.rotateZ(Math.PI / 2)
+  const pipeMat = new THREE.MeshStandardMaterial({
+    color: 0x7dd3fc,
+    emissive: 0x0284c7,
+    emissiveIntensity: 0.35,
+    metalness: 0.8,
+    roughness: 0.2
+  })
+  const mainPipe = new THREE.Mesh(mainPipeGeo, pipeMat)
+  mainPipe.position.set(0, 2.35, -1.8)
+  trenchGroup.add(mainPipe)
+  sceneInstance.add(trenchGroup)
+
+  // 5. 左前方：3排×9列露天钢筋混凝土方形虾池矩阵 (z: +11.5 ~ +29.5, x: -30 ~ +3)
+  const frontTanksGroup = new THREE.Group()
+  frontTanksGroup.position.set(-13, 0.3, 20.5)
+
+  const mainFrontMatrix = createConcreteTankMatrix({
+    rows: 3,
+    cols: 9,
+    cellW: 3.4,
+    cellD: 5.6,
+    wallH: 1.85,
+    wallT: 0.26,
+    hasWater: false // 还原航拍图左前方水泥方池浅灰白色池底与中心排污孔视觉特征
+  })
+  frontTanksGroup.add(mainFrontMatrix)
+
+  // 最左侧边角附加的2个阶梯调节方池（还原照片左下角突出的一列方池）
+  const sideExtraMatrix = createConcreteTankMatrix({
+    rows: 2,
+    cols: 1,
+    cellW: 3.2,
+    cellD: 5.6,
+    wallH: 1.85,
+    wallT: 0.26,
+    hasWater: false
+  })
+  sideExtraMatrix.position.set(-16.9, 0, 2.8)
+  frontTanksGroup.add(sideExtraMatrix)
+  sceneInstance.add(frontTanksGroup)
+
+  // 6. 右前方：两层混凝土综合管理中控大楼 + 前院广场 (x: +4 ~ +30, z: +6.5 ~ +29.5)
+  const officeBuildingGroup = new THREE.Group()
+  officeBuildingGroup.position.set(17, 0.3, 12)
+
+  const bldgW = 24
+  const bldgD = 9.5
+  const floor1H = 3.4
+  const floor2H = 3.4
+  const concreteBldgMat = new THREE.MeshStandardMaterial({
+    color: 0xcbd5e1,
+    roughness: 0.62,
+    metalness: 0.18
+  })
+  const darkWindowMat = new THREE.MeshStandardMaterial({
+    color: 0x0f172a,
+    emissive: 0x004466,
+    emissiveIntensity: 0.35,
+    roughness: 0.2,
+    metalness: 0.8
+  })
+
+  // 一层主体与二层楼板、平屋顶
+  const slabGeo = new THREE.BoxGeometry(bldgW, 0.35, bldgD)
+  const midSlab = new THREE.Mesh(slabGeo, concreteBldgMat)
+  midSlab.position.y = floor1H
+  officeBuildingGroup.add(midSlab)
+
+  const roofSlab = new THREE.Mesh(new THREE.BoxGeometry(bldgW + 0.6, 0.4, bldgD + 0.6), concreteBldgMat)
+  roofSlab.position.y = floor1H + floor2H
+  officeBuildingGroup.add(roofSlab)
+
+  // 屋顶四周女儿墙与发光科技灯带
+  const parapetEdge = new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(bldgW + 0.6, 0.5, bldgD + 0.6)),
+    new THREE.LineBasicMaterial({ color: 0x00e5ff })
   )
-  towerBase.position.y = 2.6
-  monitorGroup.add(towerBase)
+  parapetEdge.position.y = floor1H + floor2H + 0.2
+  officeBuildingGroup.add(parapetEdge)
 
-  // 顶部全景中控玻璃舱
-  const controlRoom = new THREE.Mesh(
-    new THREE.CylinderGeometry(3.4, 2.8, 2.4, 8),
-    new THREE.MeshStandardMaterial({
-      color: 0x00e5ff,
-      emissive: 0x00a8ff,
-      emissiveIntensity: 0.6,
-      transparent: true,
-      opacity: 0.85
-    })
+  // 大楼背墙与左右山墙
+  const backWall = new THREE.Mesh(
+    new THREE.BoxGeometry(bldgW, floor1H + floor2H, 0.4),
+    concreteBldgMat
   )
-  controlRoom.position.y = 6.4
-  monitorGroup.add(controlRoom)
+  backWall.position.set(0, (floor1H + floor2H) / 2, -bldgD / 2 + 0.2)
+  officeBuildingGroup.add(backWall)
 
-  const towerRoof = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.2, 3.5, 0.7, 8),
-    new THREE.MeshStandardMaterial({ color: 0x0d2b4d, metalness: 0.7, roughness: 0.3 })
+  const sideWallBldgGeo = new THREE.BoxGeometry(0.4, floor1H + floor2H, bldgD)
+  const leftBldgWall = new THREE.Mesh(sideWallBldgGeo, concreteBldgMat)
+  leftBldgWall.position.set(-bldgW / 2 + 0.2, (floor1H + floor2H) / 2, 0)
+  officeBuildingGroup.add(leftBldgWall)
+
+  const rightBldgWall = new THREE.Mesh(sideWallBldgGeo, concreteBldgMat)
+  rightBldgWall.position.set(bldgW / 2 - 0.2, (floor1H + floor2H) / 2, 0)
+  officeBuildingGroup.add(rightBldgWall)
+
+  // 正立面结构（严格还原照片：二层左半部分为敞开式外廊立柱，右半部分为实墙配4个方窗；一层带突出门廊雨棚）
+  const colGeo = new THREE.BoxGeometry(0.45, floor1H + floor2H, 0.45)
+  for (let i = -3; i <= 3; i++) {
+    const col = new THREE.Mesh(colGeo, concreteBldgMat)
+    col.position.set(i * 3.8, (floor1H + floor2H) / 2, bldgD / 2 - 0.25)
+    officeBuildingGroup.add(col)
+  }
+
+  // 二层右侧实墙与4个方形窗口（对应照片大楼右上侧的4个深色方窗）
+  const rightUpperWall = new THREE.Mesh(
+    new THREE.BoxGeometry(11.2, floor2H - 0.3, 0.35),
+    concreteBldgMat
   )
-  towerRoof.position.y = 7.95
-  monitorGroup.add(towerRoof)
+  rightUpperWall.position.set(6.2, floor1H + floor2H / 2, bldgD / 2 - 0.25)
+  officeBuildingGroup.add(rightUpperWall)
 
-  // 旋转航海雷达天线
-  radarDishGroup = new THREE.Group()
-  radarDishGroup.position.set(0, 8.7, 0)
-  const radarBar = new THREE.Mesh(
-    new THREE.BoxGeometry(2.6, 0.28, 0.38),
-    new THREE.MeshBasicMaterial({ color: 0x00e5ff })
+  const winGeo = new THREE.BoxGeometry(1.5, 1.35, 0.42)
+  for (let w = 0; w < 4; w++) {
+    const winMesh = new THREE.Mesh(winGeo, darkWindowMat)
+    winMesh.position.set(2.0 + w * 2.75, floor1H + floor2H / 2 + 0.1, bldgD / 2 - 0.24)
+    officeBuildingGroup.add(winMesh)
+  }
+
+  // 一层内退玻璃幕墙/门厅
+  const groundInterior = new THREE.Mesh(
+    new THREE.BoxGeometry(bldgW - 1.2, floor1H - 0.2, bldgD - 1.8),
+    darkWindowMat
   )
-  radarDishGroup.add(radarBar)
-  monitorGroup.add(radarDishGroup)
-  mainPlatformGroup.add(monitorGroup)
+  groundInterior.position.set(0, floor1H / 2, -0.5)
+  officeBuildingGroup.add(groundInterior)
 
-  // 5.3 智能恒温饲料仓库立筒仓群 (m-warehouse)
-  const warehouseGroup = new THREE.Group()
-  warehouseGroup.position.set(-2, 3.9, 4)
-  for (let s = -1; s <= 1; s++) {
-    const silo = new THREE.Group()
-    silo.position.set(s * 2.5, 0, 0)
-    const cyl = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.05, 1.05, 4.6, 20),
+  // 一层前伸门廊雨棚与两根门廊立柱（还原照片大楼左中部的凸出门廊）
+  const porchRoof = new THREE.Mesh(new THREE.BoxGeometry(10.5, 0.32, 2.8), concreteBldgMat)
+  porchRoof.position.set(-2.5, floor1H + 0.05, bldgD / 2 + 1.3)
+  officeBuildingGroup.add(porchRoof)
+
+  const porchColGeo = new THREE.BoxGeometry(0.38, floor1H, 0.38)
+  ;[-7.4, 2.4].forEach((px) => {
+    const pCol = new THREE.Mesh(porchColGeo, concreteBldgMat)
+    pCol.position.set(px, floor1H / 2, bldgD / 2 + 2.5)
+    officeBuildingGroup.add(pCol)
+  })
+
+  sceneInstance.add(officeBuildingGroup)
+
+  // 6.2 大楼前方硬化院坝广场 (x: +4 ~ +31, z: +17 ~ +29.5)
+  const courtyardGeo = new THREE.BoxGeometry(27, 0.35, 13)
+  const courtyardMat = new THREE.MeshStandardMaterial({
+    color: 0x94a3b8,
+    roughness: 0.8,
+    metalness: 0.1
+  })
+  const courtyard = new THREE.Mesh(courtyardGeo, courtyardMat)
+  courtyard.position.set(17, 0.38, 23.2)
+  sceneInstance.add(courtyard)
+
+  // 7. 基地前缘黑色铁艺围栏 (z = +30.2, x: -31 ~ +31)
+  const fenceGroup = new THREE.Group()
+  fenceGroup.position.set(0, 0.3, 30.2)
+  const fenceRail = new THREE.Mesh(
+    new THREE.BoxGeometry(62, 0.12, 0.12),
+    new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
+  )
+  fenceRail.position.y = 1.4
+  fenceGroup.add(fenceRail)
+
+  const postGeo = new THREE.BoxGeometry(0.18, 1.5, 0.18)
+  const postMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6 })
+  for (let fx = -30; fx <= 30; fx += 3) {
+    const post = new THREE.Mesh(postGeo, postMat)
+    post.position.set(fx, 0.75, 0)
+    fenceGroup.add(post)
+  }
+  sceneInstance.add(fenceGroup)
+
+  // 8. 罗茨鼓风增氧机房与精准拌料罐体设备点缀
+  // 左侧罗茨风机组 (m-aerator-station)
+  const aeratorStation = new THREE.Group()
+  aeratorStation.position.set(-28.5, 0.4, -8)
+  blowerFans = []
+  for (let b = 0; b < 4; b++) {
+    const blower = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.65, 0.65, 1.4, 16),
       new THREE.MeshStandardMaterial({
-        color: 0x1e4e79,
-        metalness: 0.7,
-        roughness: 0.25
+        color: 0x0284c7,
+        emissive: 0x005588,
+        emissiveIntensity: 0.5,
+        metalness: 0.7
       })
     )
-    cyl.position.y = 2.3
-    silo.add(cyl)
+    blower.rotation.z = Math.PI / 2
+    blower.position.set(0, 1.1, (b - 1.5) * 2.2)
+    aeratorStation.add(blower)
 
-    const cone = new THREE.Mesh(
-      new THREE.ConeGeometry(1.12, 1.2, 20),
-      new THREE.MeshStandardMaterial({
-        color: 0x00c6ff,
-        emissive: 0x006699,
-        emissiveIntensity: 0.45
-      })
-    )
-    cone.position.y = 5.2
-    silo.add(cone)
-
-    // 料位发光指示条
-    const strip = new THREE.Mesh(
-      new THREE.BoxGeometry(0.16, 3.4, 0.16),
+    const fanRing = new THREE.Mesh(
+      new THREE.TorusGeometry(0.55, 0.08, 8, 20),
       new THREE.MeshBasicMaterial({ color: 0x00e5ff })
     )
-    strip.position.set(0, 2.3, 1.02)
-    silo.add(strip)
-    warehouseGroup.add(silo)
+    fanRing.rotation.y = Math.PI / 2
+    fanRing.position.set(-0.72, 1.1, (b - 1.5) * 2.2)
+    aeratorStation.add(fanRing)
+    blowerFans.push(fanRing)
   }
-  mainPlatformGroup.add(warehouseGroup)
+  sceneInstance.add(aeratorStation)
 
-  // 5.4 海洋牧场生态休闲平台 (m-leisure)
-  const leisureGroup = new THREE.Group()
-  leisureGroup.position.set(9.5, 3.9, 4.2)
-  const leisureDeck = new THREE.Mesh(
-    new THREE.BoxGeometry(7.2, 0.4, 7.2),
-    new THREE.MeshStandardMaterial({ color: 0x174978, roughness: 0.4 })
+  // 9. 周边真实山谷地貌环境还原（右侧道路与溪流、后方生态水塘与绿植、远景6根高架桥墩）
+  // 9.1 右侧沿河进场道路与重安江支流溪水
+  const roadGeo = new THREE.PlaneGeometry(7.5, 96)
+  roadGeo.rotateX(-Math.PI / 2)
+  const roadMesh = new THREE.Mesh(
+    roadGeo,
+    new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.9 })
   )
-  leisureDeck.position.y = 0.2
-  leisureGroup.add(leisureDeck)
+  roadMesh.position.set(35.5, 0.02, -4)
+  roadMesh.rotation.y = 0.08
+  sceneInstance.add(roadMesh)
 
-  // 景观张拉膜遮阳顶棚（双圆锥发光顶）
-  for (let k = -1; k <= 1; k += 2) {
-    const canopy = new THREE.Mesh(
-      new THREE.ConeGeometry(2.2, 1.8, 16),
-      new THREE.MeshStandardMaterial({
-        color: 0x38bdf8,
-        emissive: 0x0284c7,
-        emissiveIntensity: 0.4,
-        transparent: true,
-        opacity: 0.88
-      })
-    )
-    canopy.position.set(k * 1.6, 2.4, 0)
-    leisureGroup.add(canopy)
+  const streamGeo = new THREE.PlaneGeometry(9, 110)
+  streamGeo.rotateX(-Math.PI / 2)
+  const streamMesh = new THREE.Mesh(
+    streamGeo,
+    new THREE.MeshStandardMaterial({
+      color: 0x0c4a6e,
+      emissive: 0x082f49,
+      roughness: 0.25,
+      metalness: 0.6
+    })
+  )
+  streamMesh.position.set(44, -0.05, -4)
+  streamMesh.rotation.y = 0.08
+  sceneInstance.add(streamMesh)
 
-    const pole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.1, 0.1, 2.2, 8),
-      new THREE.MeshBasicMaterial({ color: 0xbae6fd })
-    )
-    pole.position.set(k * 1.6, 1.1, 0)
-    leisureGroup.add(pole)
+  // 9.2 后方生态尾水沉淀塘 (还原照片左后方的水面)
+  const backPondGeo = new THREE.PlaneGeometry(26, 14)
+  backPondGeo.rotateX(-Math.PI / 2)
+  const backPond = new THREE.Mesh(
+    backPondGeo,
+    new THREE.MeshStandardMaterial({
+      color: 0x075985,
+      roughness: 0.2,
+      metalness: 0.65
+    })
+  )
+  backPond.position.set(-16, 0.02, -39)
+  sceneInstance.add(backPond)
+
+  // 9.3 远景高架桥巨型双柱桥墩（还原照片顶部最具辨识度的6座高架桥墩！）
+  const pierGroup = new THREE.Group()
+  pierGroup.position.set(0, 0, -56)
+  const pierGeo = new THREE.BoxGeometry(2.6, 26, 3.2)
+  const pierMat = new THREE.MeshStandardMaterial({
+    color: 0x94a3b8,
+    roughness: 0.6,
+    metalness: 0.2
+  })
+  for (let p = -2.5; p <= 2.5; p += 1) {
+    const pier = new THREE.Mesh(pierGeo, pierMat)
+    pier.position.set(p * 18, 13, (Math.abs(p) % 2) * -3)
+    pierGroup.add(pier)
   }
-  mainPlatformGroup.add(leisureGroup)
-  sceneInstance.add(mainPlatformGroup)
+  sceneInstance.add(pierGroup)
 
-  // 6. 增氧机纳米微孔阵列 (m-aerator)
-  const aeratorGroup = new THREE.Group()
-  aeratorGroup.position.set(17, 0.3, 13)
-  const aeratorOffsets = [
-    [-2.8, -2.2],
-    [2.8, -2.2],
-    [-2.8, 2.2],
-    [2.8, 2.2]
-  ]
-  aeratorOffsets.forEach(([ax, az]) => {
-    const unit = new THREE.Group()
-    unit.position.set(ax, 0, az)
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(1.3, 0.15, 10, 24),
-      new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-    )
-    ring.rotation.x = Math.PI / 2
-    unit.add(ring)
-
-    const motor = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.55, 0.55, 0.9, 12),
-      new THREE.MeshStandardMaterial({
-        color: 0x22c55e,
-        emissive: 0x15803d,
-        emissiveIntensity: 0.6
-      })
-    )
-    motor.position.y = 0.45
-    unit.add(motor)
-    aeratorGroup.add(unit)
+  // 9.4 右侧山坡与后方林带低多边形绿植群
+  const treeMat = new THREE.MeshStandardMaterial({
+    color: 0x14532d,
+    emissive: 0x052e16,
+    emissiveIntensity: 0.35,
+    roughness: 0.85,
+    flatShading: true
   })
-  sceneInstance.add(aeratorGroup)
+  const treeGeo = new THREE.DodecahedronGeometry(2.4, 1)
+  // 后方林带
+  for (let tx = -6; tx <= 26; tx += 3.2) {
+    for (let tz = -38; tz <= -31; tz += 3.2) {
+      const foliage = new THREE.Mesh(treeGeo, treeMat)
+      const s = 0.7 + Math.random() * 0.65
+      foliage.scale.set(s, s * 0.85, s)
+      foliage.position.set(tx + (Math.random() - 0.5) * 1.5, 1.5, tz + (Math.random() - 0.5) * 1.5)
+      sceneInstance.add(foliage)
+    }
+  }
+  // 右侧溪流外侧山体林带
+  for (let tz = -42; tz <= 32; tz += 4.2) {
+    for (let layer = 0; layer < 3; layer++) {
+      const foliage = new THREE.Mesh(treeGeo, treeMat)
+      const s = 1.1 + layer * 0.4 + Math.random() * 0.4
+      foliage.scale.set(s, s * 0.9, s)
+      foliage.position.set(50 + layer * 4.5, 1.8 + layer * 2.2, tz)
+      sceneInstance.add(foliage)
+    }
+  }
 
-  // 7. 全域光电雷达球机塔 (m-camera)
-  const cameraTowerGroup = new THREE.Group()
-  cameraTowerGroup.position.set(25, 0, 9)
-  const mast = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.35, 0.9, 9.5, 8),
-    new THREE.MeshStandardMaterial({ color: 0x1e4976, wireframe: false, metalness: 0.7 })
-  )
-  mast.position.y = 4.5
-  cameraTowerGroup.add(mast)
-
-  const domePod = new THREE.Mesh(
-    new THREE.SphereGeometry(0.85, 16, 16),
-    new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-  )
-  domePod.position.y = 9.5
-  cameraTowerGroup.add(domePod)
-
-  // 摄像头旋转扫描视场光锥
-  const coneGeo = new THREE.ConeGeometry(4.8, 11, 24, 1, true)
-  coneGeo.translate(0, -5.5, 0)
-  coneGeo.rotateZ(0.48)
-  const coneMat = new THREE.MeshBasicMaterial({
-    color: 0x00e5ff,
-    transparent: true,
-    opacity: 0.16,
-    side: THREE.DoubleSide,
-    depthWrite: false
-  })
-  cameraScanCone = new THREE.Mesh(coneGeo, coneMat)
-  cameraScanCone.position.y = 9.5
-  cameraTowerGroup.add(cameraScanCone)
-  sceneInstance.add(cameraTowerGroup)
-
-  // 8. 多参数海洋环境监测浮标站 (m-env)
-  const envBuoyGroup = new THREE.Group()
-  envBuoyGroup.position.set(34, 0, 1)
-  const buoyFloat = new THREE.Mesh(
-    new THREE.CylinderGeometry(2.2, 1.6, 1.2, 16),
-    new THREE.MeshStandardMaterial({
-      color: 0xf59e0b,
-      emissive: 0xb45309,
-      emissiveIntensity: 0.35,
-      roughness: 0.3
-    })
-  )
-  buoyFloat.position.y = 0.6
-  envBuoyGroup.add(buoyFloat)
-
-  const buoyMast = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.18, 0.45, 5.2, 8),
-    new THREE.MeshStandardMaterial({ color: 0x38bdf8 })
-  )
-  buoyMast.position.y = 3.2
-  envBuoyGroup.add(buoyMast)
-
-  const sensorBeacon = new THREE.Mesh(
-    new THREE.SphereGeometry(0.42, 12, 12),
-    new THREE.MeshBasicMaterial({ color: 0x4ade80 })
-  )
-  sensorBeacon.position.y = 5.9
-  envBuoyGroup.add(sensorBeacon)
-
-  // 水下探测激光柱
-  const subLaser = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.25, 0.9, 7, 16, 1, true),
-    new THREE.MeshBasicMaterial({
-      color: 0x2dd4bf,
-      transparent: true,
-      opacity: 0.22,
-      side: THREE.DoubleSide,
-      depthWrite: false
-    })
-  )
-  subLaser.position.y = -3.5
-  envBuoyGroup.add(subLaser)
-  sceneInstance.add(envBuoyGroup)
-
-  // 9. 远程精准气力投喂平台 (m-feeder)
-  const feederGroup = new THREE.Group()
-  feederGroup.position.set(24, 0, -10)
-  const feederDeck = new THREE.Mesh(
-    new THREE.BoxGeometry(8, 1.0, 8),
-    new THREE.MeshStandardMaterial({ color: 0x10375c, metalness: 0.6, roughness: 0.3 })
-  )
-  feederDeck.position.y = 2.6
-  feederGroup.add(feederDeck)
-
-  const feederHopper = new THREE.Mesh(
-    new THREE.CylinderGeometry(1.8, 0.9, 3.8, 16),
-    new THREE.MeshStandardMaterial({
-      color: 0x0284c7,
-      emissive: 0x006699,
-      emissiveIntensity: 0.4
-    })
-  )
-  feederHopper.position.y = 4.8
-  feederGroup.add(feederHopper)
-
-  const feederCap = new THREE.Mesh(
-    new THREE.ConeGeometry(2.0, 1.2, 16),
-    new THREE.MeshBasicMaterial({ color: 0x00e5ff })
-  )
-  feederCap.position.y = 7.2
-  feederGroup.add(feederCap)
-  sceneInstance.add(feederGroup)
-
-  // 10. 气力投喂与微电网海底/水面流光管道（带动态能量脉冲球）
+  // 10. 循环水与精准投喂流光管道系统（带动态脉冲能量球）
   flowPulses = []
   const pipeRoutes = [
-    // 饲料仓 -> 投喂平台 -> 北区网箱群
+    // 循环水处理中心 -> 保温大棚主养池群
     [
-      new THREE.Vector3(-3, 4.5, 16),
-      new THREE.Vector3(10, 3.2, 4),
-      new THREE.Vector3(24, 3.5, -10),
-      new THREE.Vector3(14, 1.2, -18),
-      new THREE.Vector3(2, 0.8, -22)
+      new THREE.Vector3(-12, 1.8, 8.5),
+      new THREE.Vector3(-12, 1.8, -4),
+      new THREE.Vector3(-12, 1.8, -18),
+      new THREE.Vector3(6, 1.8, -18),
+      new THREE.Vector3(6, 1.8, -4)
     ],
-    // 饲料仓/设备舱 -> 南区网箱群
+    // 循环水处理中心 -> 前区水泥方池群
     [
-      new THREE.Vector3(-3, 4.5, 16),
-      new THREE.Vector3(-12, 2.5, 10),
-      new THREE.Vector3(-24, 0.8, 4)
+      new THREE.Vector3(-12, 1.8, 8.5),
+      new THREE.Vector3(-22, 1.6, 15),
+      new THREE.Vector3(-22, 1.6, 25),
+      new THREE.Vector3(-4, 1.6, 25)
     ],
-    // 设备舱 -> 增氧机阵列 -> 环境浮标
+    // 综合管理中控楼 -> 精准拌料站 -> 在线水质站
     [
-      new THREE.Vector3(0, 4.2, 7),
-      new THREE.Vector3(17, 0.8, 13),
-      new THREE.Vector3(34, 0.8, 1)
+      new THREE.Vector3(17, 2.2, 12),
+      new THREE.Vector3(12, 2.2, -4),
+      new THREE.Vector3(1, 2.0, 4.5)
     ]
   ]
 
-  const pulseSphereGeo = new THREE.SphereGeometry(0.42, 12, 12)
-  const pulseSphereMat = new THREE.MeshBasicMaterial({ color: 0x7df9ff })
+  const pulseSphereGeo = new THREE.SphereGeometry(0.38, 12, 12)
+  const pulseSphereMat = new THREE.MeshBasicMaterial({ color: 0x00e5ff })
 
   pipeRoutes.forEach((pts) => {
     const curve = new THREE.CatmullRomCurve3(pts)
-    const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.16, 8, false)
+    const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.14, 8, false)
     const tubeMat = new THREE.MeshBasicMaterial({
       color: 0x00a8ff,
       transparent: true,
-      opacity: 0.42
+      opacity: 0.45
     })
     const tubeMesh = new THREE.Mesh(tubeGeo, tubeMat)
     sceneInstance.add(tubeMesh)
 
-    // 每条管道生成3个流动光球
     for (let k = 0; k < 3; k++) {
       const pulseMesh = new THREE.Mesh(pulseSphereGeo, pulseSphereMat)
       sceneInstance.add(pulseMesh)
@@ -944,74 +985,56 @@ function buildAquacultureFactory(sceneInstance: THREE.Scene) {
         mesh: pulseMesh,
         curve,
         progress: k / 3,
-        speed: 0.18 + Math.random() * 0.06
+        speed: 0.16 + Math.random() * 0.05
       })
     }
   })
 
-  // 11. 增氧机与网箱上浮气泡粒子系统
-  const bubbleCount = 220
+  // 11. 底部周期扩散脉冲扫描环
+  pulseRings = []
+  for (let i = 0; i < 3; i++) {
+    const pGeo = new THREE.RingGeometry(1.5, 2.2, 64)
+    pGeo.rotateX(-Math.PI / 2)
+    const pMat = new THREE.MeshBasicMaterial({
+      color: 0x00e5ff,
+      transparent: true,
+      opacity: 0.45,
+      side: THREE.DoubleSide,
+      depthWrite: false
+    })
+    const pMesh = new THREE.Mesh(pGeo, pMat)
+    pMesh.position.set(0, 0.42, 0)
+    pMesh.userData = { phase: i / 3 }
+    sceneInstance.add(pMesh)
+    pulseRings.push(pMesh)
+  }
+
+  // 12. 258个虾池纳米微孔曝气气泡粒子系统
+  const bubbleCount = 200
   const bubblePositions = new Float32Array(bubbleCount * 3)
   for (let i = 0; i < bubbleCount; i++) {
-    if (i < 90) {
-      // 聚集在增氧机区域 (17, y, 13)
-      bubblePositions[i * 3] = 17 + (Math.random() - 0.5) * 9
-      bubblePositions[i * 3 + 1] = -6 + Math.random() * 6.5
-      bubblePositions[i * 3 + 2] = 13 + (Math.random() - 0.5) * 9
-    } else if (i < 160) {
-      // 北区网箱群气泡与鱼群光点
-      bubblePositions[i * 3] = 2 + (Math.random() - 0.5) * 28
-      bubblePositions[i * 3 + 1] = -6 + Math.random() * 6.2
-      bubblePositions[i * 3 + 2] = -22 + (Math.random() - 0.5) * 16
-    } else {
-      // 南区网箱群气泡与鱼群光点
-      bubblePositions[i * 3] = -24 + (Math.random() - 0.5) * 24
-      bubblePositions[i * 3 + 1] = -5.5 + Math.random() * 5.8
-      bubblePositions[i * 3 + 2] = 4 + (Math.random() - 0.5) * 14
-    }
+    bubblePositions[i * 3] = (Math.random() - 0.5) * 52
+    bubblePositions[i * 3 + 1] = 0.6 + Math.random() * 2.8
+    bubblePositions[i * 3 + 2] = -26 + Math.random() * 34
   }
   const bubbleGeo = new THREE.BufferGeometry()
   bubbleGeo.setAttribute('position', new THREE.BufferAttribute(bubblePositions, 3))
   const bubbleMat = new THREE.PointsMaterial({
-    size: 0.75,
+    size: 0.65,
     map: createGlowTexture('#00e5ff'),
     transparent: true,
-    opacity: 0.85,
+    opacity: 0.8,
     depthWrite: false,
     blending: THREE.AdditiveBlending
   })
   bubbleParticles = new THREE.Points(bubbleGeo, bubbleMat)
   sceneInstance.add(bubbleParticles)
 
-  // 12. 水下金色鱼群游动粒子系统
-  const fishCount = 160
-  const fishPositions = new Float32Array(fishCount * 3)
-  for (let i = 0; i < fishCount; i++) {
-    const isNorth = i % 2 === 0
-    const cx = isNorth ? 2 : -24
-    const cz = isNorth ? -22 : 4
-    fishPositions[i * 3] = cx + (Math.random() - 0.5) * 22
-    fishPositions[i * 3 + 1] = -4.5 + Math.random() * 3.8
-    fishPositions[i * 3 + 2] = cz + (Math.random() - 0.5) * 12
-  }
-  const fishGeo = new THREE.BufferGeometry()
-  fishGeo.setAttribute('position', new THREE.BufferAttribute(fishPositions, 3))
-  const fishMat = new THREE.PointsMaterial({
-    size: 0.65,
-    map: createGlowTexture('#38bdf8'),
-    transparent: true,
-    opacity: 0.75,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending
-  })
-  fishParticles = new THREE.Points(fishGeo, fishMat)
-  sceneInstance.add(fishParticles)
-
   // 13. 选中点位时的 3D 锁定高亮光环与光柱
   highlightGroup = new THREE.Group()
   highlightGroup.visible = false
 
-  const hRingGeo = new THREE.RingGeometry(4.2, 5.0, 48)
+  const hRingGeo = new THREE.RingGeometry(3.8, 4.6, 48)
   hRingGeo.rotateX(-Math.PI / 2)
   highlightRingOuter = new THREE.Mesh(
     hRingGeo,
@@ -1023,10 +1046,10 @@ function buildAquacultureFactory(sceneInstance: THREE.Scene) {
       depthWrite: false
     })
   )
-  highlightRingOuter.position.y = 0.35
+  highlightRingOuter.position.y = 0.6
   highlightGroup.add(highlightRingOuter)
 
-  const hBeamGeo = new THREE.CylinderGeometry(2.6, 2.6, 14, 32, 1, true)
+  const hBeamGeo = new THREE.CylinderGeometry(2.4, 2.4, 14, 32, 1, true)
   hBeamGeo.translate(0, 7, 0)
   highlightBeam = new THREE.Mesh(
     hBeamGeo,
@@ -1081,10 +1104,10 @@ function initThreeScene() {
   const height = container.clientHeight || 500
 
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x020f22)
-  scene.fog = new THREE.FogExp2(0x020f22, 0.0068)
+  scene.background = new THREE.Color(0x031124)
+  scene.fog = new THREE.FogExp2(0x031124, 0.0062)
 
-  camera = new THREE.PerspectiveCamera(42, width / height, 0.5, 400)
+  camera = new THREE.PerspectiveCamera(40, width / height, 0.5, 420)
   camera.position.copy(DEFAULT_CAM_POS)
 
   renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' })
@@ -1096,35 +1119,34 @@ function initThreeScene() {
   controls.target.copy(DEFAULT_TARGET)
   controls.enableDamping = true
   controls.dampingFactor = 0.06
-  controls.maxPolarAngle = Math.PI / 2 - 0.06 // 限制不穿入海面以下
-  controls.minDistance = 14
-  controls.maxDistance = 135
+  controls.maxPolarAngle = Math.PI / 2 - 0.08
+  controls.minDistance = 16
+  controls.maxDistance = 145
   controls.autoRotate = isAutoRotate.value
-  controls.autoRotateSpeed = 0.45
+  controls.autoRotateSpeed = 0.4
 
-  // 用户手动拖拽画面时中断相机飞行插值
   controls.addEventListener('start', () => {
     flyState.active = false
   })
 
-  // 灯光系统
-  const ambientLight = new THREE.AmbientLight(0x4b8bbe, 1.35)
+  // 灯光系统（兼顾混凝土实景层次与科技蓝光氛围）
+  const ambientLight = new THREE.AmbientLight(0x7aa5d2, 1.55)
   scene.add(ambientLight)
 
-  const dirLight = new THREE.DirectionalLight(0xbfe8ff, 1.8)
-  dirLight.position.set(45, 75, 40)
+  const dirLight = new THREE.DirectionalLight(0xf0f9ff, 1.95)
+  dirLight.position.set(38, 78, 46)
   scene.add(dirLight)
 
-  const cyanPointLight = new THREE.PointLight(0x00e5ff, 3.2, 85)
-  cyanPointLight.position.set(0, 18, 6)
+  const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.75)
+  fillLight.position.set(-45, 35, -30)
+  scene.add(fillLight)
+
+  const cyanPointLight = new THREE.PointLight(0x00e5ff, 2.6, 85)
+  cyanPointLight.position.set(0, 16, -6)
   scene.add(cyanPointLight)
 
-  const northPointLight = new THREE.PointLight(0x00a8ff, 2.2, 65)
-  northPointLight.position.set(2, 12, -22)
-  scene.add(northPointLight)
-
-  // 构建 3D 水产工厂与特效
-  buildAquacultureFactory(scene)
+  // 构建重安对虾养殖示范基地 3D 模型
+  buildChonganShrimpBase(scene)
 
   // 启动动画循环
   const clock = new THREE.Clock()
@@ -1133,73 +1155,50 @@ function initThreeScene() {
     const elapsed = clock.getElapsedTime()
     const delta = clock.getDelta() || 0.016
 
-    // 1. 海面波浪顶点律动
-    if (oceanGeometry && oceanBaseZ) {
-      const pos = oceanGeometry.attributes.position
-      for (let i = 0; i < pos.count; i++) {
-        const vx = pos.getX(i)
-        const vz = pos.getZ(i)
-        const wave =
-          Math.sin(vx * 0.11 + elapsed * 1.6) * 0.28 +
-          Math.cos(vz * 0.09 + elapsed * 1.3) * 0.24
-        pos.setY(i, wave)
-      }
-      pos.needsUpdate = true
-    }
-
-    // 2. 底部周期脉冲光环扩散特效
+    // 1. 周期脉冲光环扩散特效
     pulseRings.forEach((ring) => {
       ring.visible = showPulseEffect.value
       if (!showPulseEffect.value) return
-      const phase = (elapsed * 0.22 + ring.userData.phase) % 1
+      const phase = (elapsed * 0.2 + ring.userData.phase) % 1
       const scale = 1 + phase * 32
       ring.scale.set(scale, scale, 1)
       const mat = ring.material as THREE.MeshBasicMaterial
-      mat.opacity = (1 - phase) * 0.42
+      mat.opacity = (1 - phase) * 0.35
     })
 
-    // 3. 雷达、风机与摄像头扫描锥动画
-    if (radarDishGroup) {
-      radarDishGroup.rotation.y = elapsed * 1.8
-    }
-    if (windBladesGroup) {
-      windBladesGroup.rotation.z = -elapsed * 2.2
-    }
-    if (cameraScanCone) {
-      cameraScanCone.rotation.y = Math.sin(elapsed * 0.8) * 1.2
-    }
-
-    // 4. 输送管网流光脉冲移动
+    // 2. 循环水管网流光脉冲球移动
     flowPulses.forEach((item) => {
       item.progress = (item.progress + item.speed * 0.008) % 1
       const pt = item.curve.getPointAt(item.progress)
       item.mesh.position.copy(pt)
+      item.mesh.visible = showPulseEffect.value
     })
 
-    // 5. 增氧机与网箱气泡上浮循环
+    // 3. 虾池微孔增氧气泡上浮
     if (bubbleParticles) {
+      bubbleParticles.visible = showPulseEffect.value
       const bPos = bubbleParticles.geometry.attributes.position
       for (let i = 0; i < bPos.count; i++) {
-        let py = bPos.getY(i) + 0.045
-        if (py > 0.3) py = -6.0
+        let py = bPos.getY(i) + 0.025
+        if (py > 3.2) py = 0.6
         bPos.setY(i, py)
       }
       bPos.needsUpdate = true
     }
 
-    // 6. 水下鱼群环游轻微摆动
-    if (fishParticles) {
-      fishParticles.rotation.y = Math.sin(elapsed * 0.35) * 0.08
-    }
+    // 4. 罗茨风机叶轮光环旋转
+    blowerFans.forEach((fan) => {
+      fan.rotation.x = elapsed * 3.5
+    })
 
-    // 7. 选中点位高亮光环呼吸动画
+    // 5. 选中点位高亮光环呼吸动画
     if (highlightGroup && highlightGroup.visible && highlightRingOuter) {
       const pulseScale = 1 + Math.sin(elapsed * 4) * 0.08
       highlightRingOuter.scale.set(pulseScale, pulseScale, 1)
       highlightRingOuter.rotation.z = elapsed * 0.8
     }
 
-    // 8. 相机平滑聚焦飞行插值 (Fly-to)
+    // 6. 相机平滑聚焦飞行插值 (Fly-to)
     if (flyState.active && camera && controls) {
       camera.position.lerp(flyState.targetPos, Math.min(1, delta * 4.5 + 0.06))
       controls.target.lerp(flyState.targetLookAt, Math.min(1, delta * 4.5 + 0.06))
@@ -1224,7 +1223,6 @@ function initThreeScene() {
 
   animate()
 
-  // 容器尺寸自适应
   resizeObserver = new ResizeObserver(() => {
     if (!containerRef.value || !renderer || !camera) return
     const w = containerRef.value.clientWidth
@@ -1239,7 +1237,6 @@ function initThreeScene() {
   resizeObserver.observe(container)
 }
 
-// 点击点位：高亮 3D 区域 + 镜头平滑聚焦 + 打开实时浮窗
 const selectMarker = (marker: StageMarker) => {
   if (activeMarker.value?.id === marker.id) {
     clearActiveMarker()
@@ -1284,7 +1281,6 @@ const togglePulseEffect = () => {
   showPulseEffect.value = !showPulseEffect.value
 }
 
-// 切换养殖场时同步更新选中点位数据
 watch(
   () => props.markers,
   (newMarkers) => {

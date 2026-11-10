@@ -1,7 +1,7 @@
 <template>
   <PanelCard title="设备状态" custom-class="flex-1 min-h-0" body-class="px-3 py-2 flex items-center">
     <!-- 左侧环形图 -->
-    <div class="w-[128px] h-[128px] relative shrink-0">
+    <div class="w-[132px] h-[132px] relative shrink-0">
       <BaseChart :options="chartOptions" />
       <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
         <span class="text-[10px] text-[#7da8d6] leading-tight">设备在线率</span>
@@ -57,30 +57,32 @@ const props = defineProps<{
   data: DeviceStatusData
 }>()
 
-const chartOptions = computed<EChartsOption>(() => ({
-  tooltip: {
-    trigger: 'item',
-    backgroundColor: 'rgba(6, 26, 58, 0.92)',
-    borderColor: 'rgba(0, 229, 255, 0.45)',
-    textStyle: { color: '#e2f1ff', fontSize: 11 }
-  },
-  series: [
-    {
-      name: '设备状态',
-      type: 'pie',
-      radius: ['66%', '84%'],
-      center: ['50%', '50%'],
-      avoidLabelOverlap: false,
-      label: { show: false },
-      labelLine: { show: false },
-      data: [
-        { value: props.data.online, name: '在线设备', itemStyle: { color: '#22c55e' } },
-        { value: props.data.warning, name: '告警设备', itemStyle: { color: '#f59e0b' } },
-        { value: props.data.offline, name: '离线设备', itemStyle: { color: '#ef4444' } },
-        { value: Math.round(props.data.total * 0.35), name: '网关信道', itemStyle: { color: '#1e90ff' } }
-      ]
-    }
-  ]
-}))
+const chartOptions = computed<EChartsOption>(() => {
+  const standby = Math.max(0, props.data.total - props.data.online - props.data.offline - props.data.warning)
+  return {
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: 'rgba(6, 26, 58, 0.92)',
+      borderColor: 'rgba(0, 229, 255, 0.45)',
+      textStyle: { color: '#e2f1ff', fontSize: 11 }
+    },
+    series: [
+      {
+        name: '设备状态',
+        type: 'pie',
+        radius: ['66%', '84%'],
+        center: ['50%', '50%'],
+        avoidLabelOverlap: false,
+        label: { show: false },
+        labelLine: { show: false },
+        data: [
+          { value: props.data.online, name: '在线设备', itemStyle: { color: '#22c55e' } },
+          { value: props.data.warning, name: '告警设备', itemStyle: { color: '#f59e0b' } },
+          { value: props.data.offline, name: '离线设备', itemStyle: { color: '#ef4444' } },
+          { value: standby, name: '待机备用', itemStyle: { color: '#1e90ff' } }
+        ]
+      }
+    ]
+  }
+})
 </script>
-

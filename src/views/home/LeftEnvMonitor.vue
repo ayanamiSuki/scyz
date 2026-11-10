@@ -1,5 +1,5 @@
 <template>
-  <PanelCard title="环境监测" custom-class="h-[388px]" body-class="px-3 py-2 flex flex-col">
+  <PanelCard title="环境监测" custom-class="h-[446px]" body-class="px-3 py-2 flex flex-col">
     <template #extra>
       <div class="cockpit-switch-group">
         <span
@@ -19,8 +19,8 @@
       </div>
     </template>
 
-    <!-- 8项监测参数列表 -->
-    <div class="space-y-1.5 shrink-0">
+    <!-- 9项监测参数列表（水下9项水质指标 / 水上黄平县重安镇实时气象） -->
+    <div class="space-y-1 shrink-0">
       <div
         v-for="item in currentMetrics"
         :key="item.key"
@@ -39,7 +39,7 @@
           </span>
           <span class="text-[#9cc5eb]">{{ item.label }}</span>
         </div>
-        <div class="w-[115px] text-left flex items-baseline gap-1">
+        <div class="w-[122px] text-left flex items-baseline gap-1">
           <span class="num-highlight text-[13px] text-[#e6f4ff]">{{ item.value }}</span>
           <span class="text-[11px] text-[#7da8d6]">{{ item.unit }}</span>
         </div>
@@ -77,6 +77,7 @@ import type { EChartsOption } from 'echarts'
 import PanelCard from '@/components/PanelCard.vue'
 import BaseChart from '@/components/BaseChart.vue'
 import type { EnvMetricItem, EnvTrendSeries } from '@/mock/dashboardData'
+import { useWeather } from '@/services/weather'
 
 const props = defineProps<{
   metrics: {
@@ -86,12 +87,17 @@ const props = defineProps<{
   trends: Record<string, EnvTrendSeries>
 }>()
 
+const { weatherState } = useWeather()
 const envType = ref<'underwater' | 'surface'>('underwater')
 const trendTabKeys = ['水温', '溶解氧', 'pH', '盐度']
 const activeTrendTab = ref<string>('水温')
 
 const currentMetrics = computed(() =>
-  envType.value === 'underwater' ? props.metrics.underwater : props.metrics.surface
+  envType.value === 'underwater'
+    ? props.metrics.underwater
+    : weatherState.value.surfaceMetrics?.length
+      ? weatherState.value.surfaceMetrics
+      : props.metrics.surface
 )
 
 const chartOptions = computed<EChartsOption>(() => {
@@ -173,4 +179,3 @@ const chartOptions = computed<EChartsOption>(() => {
   }
 })
 </script>
-
