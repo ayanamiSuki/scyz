@@ -120,7 +120,7 @@
 
       <!-- 右侧胶囊文字标签 -->
       <span
-        class="px-2 py-0.5 rounded bg-[#051d3f]/85 border text-[11px] backdrop-blur-sm whitespace-nowrap transition-all shadow"
+        class="px-2.5 py-0.5 rounded bg-[#051d3f]/85 border text-[14px] backdrop-blur-sm whitespace-nowrap transition-all shadow"
         :class="
           activeMarker?.id === marker.id
             ? 'border-[#00e5ff] text-[#00e5ff] font-semibold shadow-[0_0_10px_rgba(0,229,255,0.4)]'
@@ -140,34 +140,34 @@
   <transition name="el-fade-in-linear">
     <div
       v-if="activeMarker"
-      class="absolute right-4 top-4 z-30 w-[272px] rounded bg-[#061d40]/95 border border-[#00e5ff]/60 p-3 shadow-2xl backdrop-blur-md"
+      class="absolute right-3.5 top-12 z-30 w-[320px] rounded bg-[#061d40]/95 border border-[#00e5ff]/60 p-3.5 shadow-2xl backdrop-blur-md"
     >
       <div class="flex items-center justify-between border-b border-[#00a8ff]/25 pb-2 mb-2">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-[#00e5ff] animate-ping" />
-          <span class="text-xs font-semibold text-white">{{ activeMarker.name }}</span>
+          <span class="text-[16px] font-semibold text-white">{{ activeMarker.name }}</span>
           <span
-            class="px-1.5 py-0.2 text-[10px] rounded bg-[#22c55e]/20 text-[#4ade80] border border-[#22c55e]/40"
+            class="px-2 py-0.5 text-[12px] rounded bg-[#22c55e]/20 text-[#4ade80] border border-[#22c55e]/40"
           >
             {{ activeMarker.status }}
           </span>
         </div>
         <button
-          class="text-[#7da8d6] hover:text-white text-xs bg-transparent border-0 cursor-pointer"
+          class="text-[#7da8d6] hover:text-white text-[14px] bg-transparent border-0 cursor-pointer"
           @click="$emit('clear-marker')"
         >
           ✕
         </button>
       </div>
 
-      <p class="text-[11px] text-[#9cc5eb] leading-relaxed mb-2.5">
+      <p class="text-[14px] text-[#9cc5eb] leading-relaxed mb-2.5">
         {{ activeMarker.detail }}
       </p>
 
       <div class="grid grid-cols-3 gap-1.5 bg-[#03122a]/80 p-2 rounded border border-[#00a8ff]/20">
         <div v-for="m in activeMarker.metrics" :key="m.label" class="text-center">
-          <div class="text-[10px] text-[#6e96bf]">{{ m.label }}</div>
-          <div class="num-highlight text-[12px] text-[#00e5ff] mt-0.5">{{ m.value }}</div>
+          <div class="text-[14px] text-[#6e96bf]">{{ m.label }}</div>
+          <div class="num-highlight text-[16px] text-[#00e5ff] mt-0.5">{{ m.value }}</div>
         </div>
       </div>
     </div>

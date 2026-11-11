@@ -1,33 +1,33 @@
 <template>
-  <PanelCard title="投喂管理" custom-class="h-[312px]" body-class="px-3 py-2 flex flex-col">
+  <PanelCard title="投喂管理" custom-class="h-[296px]" body-class="px-3.5 py-2 flex flex-col">
     <template #extra>
-      <span class="text-[10.5px] text-[#00e5ff] font-medium">{{ data.stageTitle }}</span>
+      <span class="text-[14px] text-[#00e5ff] font-medium">{{ data.stageTitle }}</span>
     </template>
 
     <!-- 上半部分：今日投喂环形图 + 1/2/3号料与保健添加剂占比明细 -->
-    <div class="flex items-center h-[98px] shrink-0">
-      <div class="w-[96px] h-[96px] relative shrink-0">
+    <div class="flex items-center h-[100px] shrink-0">
+      <div class="w-[98px] h-[98px] relative shrink-0">
         <BaseChart :options="chartOptions" />
         <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span class="text-[9px] text-[#7da8d6]">今日总投({{ data.unit }})</span>
-          <span class="num-highlight text-[15px] text-white mt-0.5">{{ data.todayTotal }}</span>
+          <span class="text-[12px] text-[#7da8d6] leading-tight">今日总投({{ data.unit }})</span>
+          <span class="num-highlight text-[18px] text-white mt-0.5 leading-none">{{ data.todayTotal }}</span>
         </div>
       </div>
 
-      <div class="flex-1 pl-2.5 space-y-1.5 text-[11px]">
+      <div class="flex-1 pl-3.5 space-y-1 text-[14px]">
         <div
           v-for="item in data.slices"
           :key="item.name"
-          class="flex items-center justify-between"
+          class="flex items-center justify-between leading-snug"
         >
-          <div class="flex items-center gap-1.5 min-w-[68px]">
-            <span class="w-2 h-2 rounded-full shrink-0" :style="{ backgroundColor: item.color }" />
+          <div class="flex items-center gap-2 min-w-[84px]">
+            <span class="w-2.5 h-2.5 rounded-full shrink-0" :style="{ backgroundColor: item.color }" />
             <span class="text-[#d6ecff] truncate">{{ item.name }}</span>
           </div>
-          <div class="text-[#9cc5eb] text-right w-[58px] font-mono">
+          <div class="text-[#9cc5eb] text-right w-[76px] font-mono">
             {{ item.count }} {{ item.unit }}
           </div>
-          <div class="text-[#8ab4dc] text-right w-[42px] font-mono">
+          <div class="text-[#8ab4dc] text-right w-[58px] font-mono">
             {{ item.percent }}
           </div>
         </div>
@@ -35,18 +35,18 @@
     </div>
 
     <!-- 下半部分：6时段投喂配方明细表 -->
-    <div class="flex items-center justify-between text-[10.5px] text-[#8ab4dc] mt-1 mb-1 shrink-0">
+    <div class="flex items-center justify-between text-[14px] text-[#8ab4dc] mt-1 mb-1 shrink-0">
       <span>每餐基础料：1号料100g + 2号料250g + 3号料50g</span>
       <span class="text-[#00e5ff]">6餐/日</span>
     </div>
     <div class="flex-1 min-h-0 overflow-hidden">
       <el-table :data="data.plans" class="cockpit-table w-full" height="100%">
-        <el-table-column prop="time" label="时间" width="46" />
-        <el-table-column prop="baseFeed" label="基础饲料" width="112" show-overflow-tooltip />
-        <el-table-column prop="supplement" label="营养/保健添加" min-width="115" show-overflow-tooltip />
-        <el-table-column prop="amount" label="合计(g)" width="54" align="right">
+        <el-table-column prop="time" label="时间" width="62" />
+        <el-table-column prop="baseFeed" label="基础饲料" width="172" show-overflow-tooltip />
+        <el-table-column prop="supplement" label="营养/保健添加" min-width="130" show-overflow-tooltip />
+        <el-table-column prop="amount" label="合计(g)" width="76" align="right">
           <template #default="{ row }">
-            <span class="font-mono text-[#00e5ff]">{{ row.amount }}</span>
+            <span class="num-highlight text-[18px] text-[#00e5ff]">{{ row.amount }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -76,7 +76,7 @@ const chartOptions = computed<EChartsOption>(() => ({
     trigger: 'item',
     backgroundColor: 'rgba(6, 26, 58, 0.92)',
     borderColor: 'rgba(0, 229, 255, 0.45)',
-    textStyle: { color: '#e2f1ff', fontSize: 11 }
+    textStyle: { color: '#e2f1ff', fontSize: 14 }
   },
   series: [
     {

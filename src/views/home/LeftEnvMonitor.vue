@@ -1,5 +1,5 @@
 <template>
-  <PanelCard title="环境监测" custom-class="h-[446px]" body-class="px-3 py-2 flex flex-col">
+  <PanelCard title="环境监测" custom-class="h-[488px]" body-class="px-3.5 py-2 flex flex-col">
     <template #extra>
       <div class="cockpit-switch-group">
         <span
@@ -24,24 +24,24 @@
       <div
         v-for="item in currentMetrics"
         :key="item.key"
-        class="flex items-center justify-between text-[12px] h-[22px] px-1 rounded hover:bg-[#00a8ff]/10 transition-colors"
+        class="flex items-center justify-between text-[14px] h-[25px] px-1.5 rounded hover:bg-[#00a8ff]/10 transition-colors"
       >
         <div class="flex items-center gap-2">
           <!-- 状态圆点图标 -->
           <span
-            class="w-3.5 h-3.5 rounded-full flex items-center justify-center border"
+            class="w-4 h-4 rounded-full flex items-center justify-center border"
             :style="{
               borderColor: `${item.color}66`,
               backgroundColor: `${item.color}22`
             }"
           >
-            <span class="w-1.5 h-1.5 rounded-full" :style="{ backgroundColor: item.color }" />
+            <span class="w-2 h-2 rounded-full" :style="{ backgroundColor: item.color }" />
           </span>
           <span class="text-[#9cc5eb]">{{ item.label }}</span>
         </div>
-        <div class="w-[122px] text-left flex items-baseline gap-1">
-          <span class="num-highlight text-[13px] text-[#e6f4ff]">{{ item.value }}</span>
-          <span class="text-[11px] text-[#7da8d6]">{{ item.unit }}</span>
+        <div class="w-[156px] text-left flex items-baseline gap-1.5">
+          <span class="num-highlight text-[18px] text-[#e6f4ff] leading-none">{{ item.value }}</span>
+          <span class="text-[14px] text-[#7da8d6]">{{ item.unit }}</span>
         </div>
       </div>
     </div>
@@ -52,11 +52,11 @@
     </div>
 
     <!-- 底部4个指标切换Tab：水温 / 溶解氧 / pH / 盐度 -->
-    <div class="h-[24px] shrink-0 grid grid-cols-4 border-t border-[#00a8ff]/20 pt-1">
+    <div class="h-[30px] shrink-0 grid grid-cols-4 border-t border-[#00a8ff]/20 pt-1">
       <button
         v-for="tab in trendTabKeys"
         :key="tab"
-        class="relative text-[11px] flex items-center justify-center cursor-pointer bg-transparent border-0 transition-colors"
+        class="relative text-[14px] flex items-center justify-center cursor-pointer bg-transparent border-0 transition-colors"
         :class="activeTrendTab === tab ? 'text-[#00e5ff] font-semibold' : 'text-[#7da8d6] hover:text-white'"
         @click="activeTrendTab = tab"
       >
@@ -105,15 +105,15 @@ const chartOptions = computed<EChartsOption>(() => {
   return {
     grid: {
       top: 12,
-      right: 10,
-      bottom: 20,
-      left: 28
+      right: 12,
+      bottom: 22,
+      left: 34
     },
     tooltip: {
       trigger: 'axis',
       backgroundColor: 'rgba(6, 26, 58, 0.92)',
       borderColor: 'rgba(0, 229, 255, 0.45)',
-      textStyle: { color: '#e2f1ff', fontSize: 11 },
+      textStyle: { color: '#e2f1ff', fontSize: 14 },
       formatter: (params: any) => {
         const p = Array.isArray(params) ? params[0] : params
         return `${p.AxisValue || p.name}<br/>${seriesObj.label}: <b>${p.value} ${seriesObj.unit}</b>`
@@ -127,7 +127,7 @@ const chartOptions = computed<EChartsOption>(() => {
       axisTick: { show: false },
       axisLabel: {
         color: '#6e96bf',
-        fontSize: 10,
+        fontSize: 12,
         margin: 6
       }
     },
@@ -143,7 +143,7 @@ const chartOptions = computed<EChartsOption>(() => {
       },
       axisLabel: {
         color: '#6e96bf',
-        fontSize: 10
+        fontSize: 12
       }
     },
     series: [

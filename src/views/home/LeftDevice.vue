@@ -1,46 +1,46 @@
 <template>
-  <PanelCard title="设备状态" custom-class="flex-1 min-h-0" body-class="px-3 py-2 flex items-center">
+  <PanelCard title="设备状态" custom-class="flex-1 min-h-0" body-class="px-3.5 py-2.5 flex items-center">
     <!-- 左侧环形图 -->
-    <div class="w-[132px] h-[132px] relative shrink-0">
+    <div class="w-[144px] h-[144px] relative shrink-0">
       <BaseChart :options="chartOptions" />
       <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-        <span class="text-[10px] text-[#7da8d6] leading-tight">设备在线率</span>
-        <span class="num-highlight text-[17px] text-white mt-0.5">{{ data.onlineRate }}%</span>
+        <span class="text-[14px] text-[#7da8d6] leading-tight">设备在线率</span>
+        <span class="num-highlight text-[18px] text-white mt-0.5">{{ data.onlineRate }}%</span>
       </div>
     </div>
 
     <!-- 右侧图例与数值明细 -->
-    <div class="flex-1 pl-3 space-y-2.5 text-xs">
+    <div class="flex-1 pl-4 space-y-2.5 text-[14px]">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-[2px] bg-[#22c55e]" />
+          <span class="w-3 h-3 rounded-[2px] bg-[#22c55e]" />
           <span class="text-[#9cc5eb]">在线设备</span>
         </div>
-        <span class="num-highlight text-[14px] text-white">{{ data.online }}</span>
+        <span class="num-highlight text-[18px] text-white">{{ data.online }}</span>
       </div>
 
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-[2px] bg-[#ef4444]" />
+          <span class="w-3 h-3 rounded-[2px] bg-[#ef4444]" />
           <span class="text-[#9cc5eb]">离线设备</span>
         </div>
-        <span class="num-highlight text-[14px] text-white">{{ data.offline }}</span>
+        <span class="num-highlight text-[18px] text-white">{{ data.offline }}</span>
       </div>
 
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-[2px] bg-[#f59e0b]" />
+          <span class="w-3 h-3 rounded-[2px] bg-[#f59e0b]" />
           <span class="text-[#9cc5eb]">告警设备</span>
         </div>
-        <span class="num-highlight text-[14px] text-white">{{ data.warning }}</span>
+        <span class="num-highlight text-[18px] text-white">{{ data.warning }}</span>
       </div>
 
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-[2px] bg-[#3b82f6]" />
+          <span class="w-3 h-3 rounded-[2px] bg-[#3b82f6]" />
           <span class="text-[#9cc5eb]">设备总数</span>
         </div>
-        <span class="num-highlight text-[14px] text-white">{{ data.total }}</span>
+        <span class="num-highlight text-[18px] text-white">{{ data.total }}</span>
       </div>
     </div>
   </PanelCard>
@@ -64,7 +64,7 @@ const chartOptions = computed<EChartsOption>(() => {
       trigger: 'item',
       backgroundColor: 'rgba(6, 26, 58, 0.92)',
       borderColor: 'rgba(0, 229, 255, 0.45)',
-      textStyle: { color: '#e2f1ff', fontSize: 11 }
+      textStyle: { color: '#e2f1ff', fontSize: 14 }
     },
     series: [
       {

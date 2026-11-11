@@ -1,25 +1,25 @@
 <template>
-  <PanelCard title="基地介绍" custom-class="h-[192px]" body-class="px-3 py-2 flex flex-col justify-between">
+  <PanelCard title="基地介绍" custom-class="h-[206px]" body-class="px-3.5 py-2 flex flex-col justify-between">
     <template #extra>
-      <span class="text-[11px] text-[#00e5ff] flex items-center gap-1">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff]" />
+      <span class="text-[14px] text-[#00e5ff] flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-[#00e5ff]" />
         <span>{{ data.location }}</span>
       </span>
     </template>
 
     <!-- 顶部核心定位标签 -->
-    <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+    <div class="flex flex-wrap items-center gap-2 shrink-0">
       <span
         v-for="tag in data.tags"
         :key="tag"
-        class="px-2 py-0.5 rounded text-[10px] bg-[#00a8ff]/15 border border-[#00e5ff]/35 text-[#8ce7ff]"
+        class="px-2.5 py-0.5 rounded text-[14px] bg-[#00a8ff]/15 border border-[#00e5ff]/35 text-[#8ce7ff]"
       >
         {{ tag }}
       </span>
     </div>
 
     <!-- 中部基地介绍正文 -->
-    <p class="text-[11.5px] text-[#cfe8ff] leading-[1.6] m-0 line-clamp-4">
+    <p class="text-[14px] text-[#cfe8ff] leading-[1.5] m-0 line-clamp-3">
       {{ data.description }}
     </p>
 
@@ -28,10 +28,10 @@
       <div
         v-for="item in data.highlights"
         :key="item.label"
-        class="bg-[#041836]/75 rounded px-2 py-1 border border-[#00a8ff]/20 flex items-center justify-between"
+        class="bg-[#041836]/75 itemx rounded px-2.5 py-1 border border-[#00a8ff]/20 flex items-center justify-between"
       >
-        <span class="text-[10px] text-[#7da8d6]">{{ item.label }}</span>
-        <span class="num-highlight text-[12px] text-[#00e5ff]">{{ item.value }}</span>
+        <span class="text-[14px] text-[#7da8d6]">{{ item.label }}</span>
+        <span class="num-highlight text-[18px] text-[#00e5ff] leading-none">{{ item.value }}</span>
       </div>
     </div>
   </PanelCard>
@@ -45,3 +45,8 @@ defineProps<{
   data: BaseIntroData
 }>()
 </script>
+<style lang="css" scoped>
+.itemx{
+  flex-direction: column;
+}
+</style>

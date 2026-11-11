@@ -5,6 +5,8 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js'
+import { CSS2DRenderer } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
+import { CSS3DRenderer } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 import type { StageMarker } from '@/mock/dashboardData'
 import {
   DEFAULT_CAM_POS,
@@ -13,28 +15,41 @@ import {
   type ProjectedMarkerPos
 } from './stageConfig'
 import { buildChonganShrimpBase, type StageAnimatedRefs } from './stageBuilder'
+import {
+  MAP_DEFAULT_CAM_POS,
+  MAP_DEFAULT_TARGET,
+  MAP_HUB_WAREHOUSES,
+  type HubId
+} from './mapStageData'
+import { buildGuizhouRadiationMap, type MapAnimatedRefs } from './mapStageBuilder'
 
 export function useThreeStage(
   containerRef: Ref<HTMLDivElement | null>,
   canvasWrapRef: Ref<HTMLDivElement | null>,
   getMarkers: () => StageMarker[]
 ) {
+  const sceneTab = ref<'farm' | 'map'>('farm')
+  const selectedHubId = ref<HubId | 'all'>('all')
   const activeMarker = ref<StageMarker | null>(null)
   const isAutoRotate = ref(false)
   const showPulseEffect = ref(true)
 
-  // 每个点位实时投影后的屏幕像素坐标
+  // 厂区模式下每个点位实时投影后的屏幕像素坐标
   const projectedMarkers = reactive<Record<string, ProjectedMarkerPos>>({})
 
   let scene: THREE.Scene | null = null
+  let farmGroup: THREE.Group | null = null
   let camera: THREE.PerspectiveCamera | null = null
   let renderer: THREE.WebGLRenderer | null = null
+  let css2dRenderer: CSS2DRenderer | null = null
+  let css3dRenderer: CSS3DRenderer | null = null
   let composer: EffectComposer | null = null
   let bloomPass: UnrealBloomPass | null = null
   let controls: OrbitControls | null = null
   let animationFrameId = 0
   let resizeObserver: ResizeObserver | null = null
   let animatedRefs: StageAnimatedRefs | null = null
+  let mapAnimatedRefs: MapAnimatedRefs | null = null
 
   // 相机平滑飞行插值状态
   const flyState = {
@@ -150,6 +165,20 @@ export function useThreeStage(
     renderer.toneMappingExposure = 0.96
     wrap.appendChild(renderer.domElement)
 
+    // 初始化 CSS3DRenderer（用于贴地立体地州市名与总厂/三大枢纽仓 3D 精灵立牌）
+    css3dRenderer = new CSS3DRenderer()
+    css3dRenderer.setSize(width, height)
+    css3dRenderer.domElement.style.cssText =
+      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;display:none;overflow:hidden;'
+    wrap.appendChild(css3dRenderer.domElement)
+
+    // 初始化 CSS2DRenderer（用于下辖辐射县市清晰正对屏幕标签）
+    css2dRenderer = new CSS2DRenderer()
+    css2dRenderer.setSize(width, height)
+    css2dRenderer.domElement.style.cssText =
+      'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:6;display:none;overflow:hidden;'
+    wrap.appendChild(css2dRenderer.domElement)
+
     // 后期微泛光渲染管线（高阈值、低强度，仅对灯芯与窗格做精致点缀，绝不泛白）
     composer = new EffectComposer(renderer)
     const renderPass = new RenderPass(scene, camera)
@@ -181,7 +210,19 @@ export function useThreeStage(
     })
 
     setupLights(scene)
-    animatedRefs = buildChonganShrimpBase(scene)
+
+    // 1. 构建 3D 孪生厂房场景组
+    farmGroup = new THREE.Group()
+    farmGroup.name = 'ChonganFarmGroup'
+    scene.add(farmGroup)
+    animatedRefs = buildChonganShrimpBase(farmGroup as unknown as THREE.Scene)
+
+    // 2. 构建贵州省及周边产销辐射 3D 点线地图场景组（默认隐藏，通过顶部 Tabs 切换）
+    const mapBuilt = buildGuizhouRadiationMap((hubId) => selectMapHub(hubId))
+    mapAnimatedRefs = mapBuilt.animatedRefs
+    mapAnimatedRefs.rootGroup.visible = false
+    mapAnimatedRefs.setLabelsVisible(false)
+    scene.add(mapAnimatedRefs.rootGroup)
 
     const clock = new THREE.Clock()
     const animate = () => {
@@ -189,7 +230,7 @@ export function useThreeStage(
       const elapsed = clock.getElapsedTime()
       const delta = clock.getDelta() || 0.016
 
-      if (animatedRefs) {
+      if (sceneTab.value === 'farm' && animatedRefs) {
         // 1. 周期脉冲光环扩散特效
         animatedRefs.pulseRings.forEach((ring) => {
           ring.visible = showPulseEffect.value
@@ -232,6 +273,36 @@ export function useThreeStage(
           animatedRefs.highlightRingOuter.scale.set(pulseScale, pulseScale, 1)
           animatedRefs.highlightRingOuter.rotation.z = elapsed * 0.8
         }
+      } else if (sceneTab.value === 'map' && mapAnimatedRefs) {
+        // 地图模式 1：两级飞线流光粒子沿贝塞尔弧线推进
+        mapAnimatedRefs.comets.forEach((comet) => {
+          const isHubVisible =
+            selectedHubId.value === 'all' || selectedHubId.value === comet.hubId
+          comet.mesh.visible = showPulseEffect.value && isHubVisible
+          if (!comet.mesh.visible) return
+          comet.progress = (comet.progress + comet.speed * 0.011) % 1
+          const pt = comet.curve.getPointAt(comet.progress)
+          comet.mesh.position.copy(pt)
+        })
+
+        // 地图模式 2：总厂与三大枢纽仓底座脉冲波纹扩散
+        mapAnimatedRefs.pulseRings.forEach((ring) => {
+          const phase = (elapsed * 0.45 + (ring.userData.phase || 0)) % 1
+          const maxScale = ring.userData.maxScale || 3.5
+          const scale = 1 + phase * maxScale
+          ring.scale.set(scale, scale, 1)
+          const mat = ring.material as THREE.MeshBasicMaterial
+          mat.opacity = (1 - phase) * 0.78
+        })
+
+        // 地图模式 3：底部科技刻度环微旋转与光柱呼吸
+        mapAnimatedRefs.techRings.forEach((ring, idx) => {
+          ring.rotation.y = elapsed * (idx % 2 === 0 ? 0.06 : -0.04)
+        })
+        mapAnimatedRefs.beaconColumns.forEach((col, idx) => {
+          const s = 1 + Math.sin(elapsed * 3.2 + idx) * 0.08
+          col.scale.set(s, 1, s)
+        })
       }
 
       // 6. 相机平滑聚焦飞行插值 (Fly-to)
@@ -253,7 +324,12 @@ export function useThreeStage(
 
       if (composer && scene && camera) {
         composer.render()
-        updateMarkerProjections()
+        if (sceneTab.value === 'farm') {
+          updateMarkerProjections()
+        } else {
+          css3dRenderer?.render(scene, camera)
+          css2dRenderer?.render(scene, camera)
+        }
       }
     }
 
@@ -268,8 +344,15 @@ export function useThreeStage(
         camera.updateProjectionMatrix()
         renderer.setSize(w, h)
         composer.setSize(w, h)
+        css3dRenderer?.setSize(w, h)
+        css2dRenderer?.setSize(w, h)
         bloomPass?.resolution.set(w, h)
-        updateMarkerProjections()
+        if (sceneTab.value === 'farm') {
+          updateMarkerProjections()
+        } else if (scene) {
+          css3dRenderer?.render(scene, camera)
+          css2dRenderer?.render(scene, camera)
+        }
       }
     })
     resizeObserver.observe(container)
@@ -304,11 +387,76 @@ export function useThreeStage(
     }
   }
 
-  const resetCameraView = () => {
+  // 切换顶部双场景 Tab（3D 孪生厂区 / 产销辐射地图）
+  const switchSceneTab = (tab: 'farm' | 'map') => {
+    if (sceneTab.value === tab) return
+    sceneTab.value = tab
     clearActiveMarker()
-    flyState.targetPos.copy(DEFAULT_CAM_POS)
-    flyState.targetLookAt.copy(DEFAULT_TARGET)
-    flyState.active = true
+
+    const isMap = tab === 'map'
+    if (farmGroup) {
+      farmGroup.visible = !isMap
+    }
+    if (mapAnimatedRefs) {
+      mapAnimatedRefs.rootGroup.visible = isMap
+      mapAnimatedRefs.setLabelsVisible(isMap)
+    }
+    if (css3dRenderer) {
+      css3dRenderer.domElement.style.display = isMap ? 'block' : 'none'
+    }
+    if (css2dRenderer) {
+      css2dRenderer.domElement.style.display = isMap ? 'block' : 'none'
+    }
+
+    if (tab === 'farm') {
+      if (bloomPass) {
+        bloomPass.strength = showPulseEffect.value ? 0.28 : 0.1
+      }
+      flyState.targetPos.copy(DEFAULT_CAM_POS)
+      flyState.targetLookAt.copy(DEFAULT_TARGET)
+      flyState.active = true
+      updateMarkerProjections()
+    } else {
+      if (bloomPass) {
+        bloomPass.strength = showPulseEffect.value ? 0.36 : 0.15
+      }
+      selectMapHub('all')
+    }
+  }
+
+  // 产销辐射地图下筛选/聚焦指定枢纽仓
+  const selectMapHub = (hubId: HubId | 'all') => {
+    selectedHubId.value = hubId
+    if (mapAnimatedRefs) {
+      ;(Object.keys(mapAnimatedRefs.hubGroups) as HubId[]).forEach((id) => {
+        mapAnimatedRefs!.hubGroups[id].visible = hubId === 'all' || hubId === id
+      })
+      mapAnimatedRefs.updateLabelStyles(hubId)
+    }
+
+    if (hubId === 'all') {
+      flyState.targetPos.copy(MAP_DEFAULT_CAM_POS)
+      flyState.targetLookAt.copy(MAP_DEFAULT_TARGET)
+      flyState.active = true
+    } else {
+      const targetHub = MAP_HUB_WAREHOUSES.find((h) => h.id === hubId)
+      if (targetHub) {
+        flyState.targetPos.copy(targetHub.camPos)
+        flyState.targetLookAt.copy(targetHub.camTarget)
+        flyState.active = true
+      }
+    }
+  }
+
+  const resetCameraView = () => {
+    if (sceneTab.value === 'farm') {
+      clearActiveMarker()
+      flyState.targetPos.copy(DEFAULT_CAM_POS)
+      flyState.targetLookAt.copy(DEFAULT_TARGET)
+      flyState.active = true
+    } else {
+      selectMapHub('all')
+    }
   }
 
   const toggleAutoRotate = () => {
@@ -318,7 +466,8 @@ export function useThreeStage(
   const togglePulseEffect = () => {
     showPulseEffect.value = !showPulseEffect.value
     if (bloomPass) {
-      bloomPass.strength = showPulseEffect.value ? 0.28 : 0.1
+      const activeStrength = sceneTab.value === 'map' ? 0.36 : 0.28
+      bloomPass.strength = showPulseEffect.value ? activeStrength : 0.1
     }
   }
 
@@ -352,15 +501,21 @@ export function useThreeStage(
     }
     composer?.dispose()
     renderer?.dispose()
+    css3dRenderer?.domElement.remove()
+    css2dRenderer?.domElement.remove()
   })
 
   return {
+    sceneTab,
+    selectedHubId,
     activeMarker,
     isAutoRotate,
     showPulseEffect,
     projectedMarkers,
     selectMarker,
     clearActiveMarker,
+    switchSceneTab,
+    selectMapHub,
     resetCameraView,
     toggleAutoRotate,
     togglePulseEffect

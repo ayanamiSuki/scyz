@@ -1,13 +1,13 @@
 <template>
-  <PanelCard title="生长分析" custom-class="h-[228px]" body-class="px-3 py-2 flex flex-col">
+  <PanelCard title="生长分析" custom-class="h-[234px]" body-class="px-3.5 py-2 flex flex-col">
     <template #extra>
-      <span class="text-[10px] text-[#8ab4dc]">放苗天数曲线 (1斤=500g)</span>
+      <span class="text-[14px] text-[#8ab4dc]">放苗天数曲线 (1斤=500g)</span>
     </template>
 
     <!-- 顶部品种与阶段说明条 -->
-    <div class="flex items-center justify-between text-[10.5px] text-[#8ab4dc] shrink-0 mb-0.5">
+    <div class="flex items-center justify-between text-[14px] text-[#8ab4dc] shrink-0 mb-0.5">
       <div class="flex items-center gap-1.5 truncate" :title="data.subtitle">
-        <span class="w-2 h-0.5 bg-[#00e5ff] inline-block shrink-0" />
+        <span class="w-2.5 h-0.5 bg-[#00e5ff] inline-block shrink-0" />
         <span class="truncate">{{ data.subtitle }}</span>
       </div>
       <span class="text-[#00e5ff] shrink-0 ml-1">单重(g)</span>
@@ -19,32 +19,32 @@
     </div>
 
     <!-- 底部4项核心生长指标 -->
-    <div class="grid grid-cols-4 gap-1 pt-1.5 border-t border-[#00a8ff]/15 shrink-0">
+    <div class="grid grid-cols-4 gap-2 pt-1.5 border-t border-[#00a8ff]/15 shrink-0">
       <div>
-        <div class="text-[10px] text-[#7da8d6]">当前日龄</div>
+        <div class="text-[14px] text-[#7da8d6] leading-tight">当前日龄</div>
         <div class="mt-0.5">
-          <span class="num-highlight text-[13px] text-[#00e5ff]">{{ data.currentDay }}</span>
+          <span class="num-highlight text-[16px] text-[#00e5ff] leading-tight">{{ data.currentDay }}</span>
         </div>
       </div>
 
       <div>
-        <div class="text-[10px] text-[#7da8d6]">当前头数</div>
+        <div class="text-[14px] text-[#7da8d6] leading-tight">当前头数</div>
         <div class="mt-0.5">
-          <span class="num-highlight text-[12px] text-white">{{ data.currentSpec }}</span>
+          <span class="num-highlight text-[16px] text-white leading-tight">{{ data.currentSpec }}</span>
         </div>
       </div>
 
       <div>
-        <div class="text-[10px] text-[#7da8d6]">均匀度</div>
+        <div class="text-[14px] text-[#7da8d6] leading-tight">均匀度</div>
         <div class="mt-0.5">
-          <span class="num-highlight text-[14px] text-white">{{ data.uniformity }}</span>
+          <span class="num-highlight text-[16px] text-white leading-tight">{{ data.uniformity }}</span>
         </div>
       </div>
 
       <div>
-        <div class="text-[10px] text-[#7da8d6]">成活率</div>
+        <div class="text-[14px] text-[#7da8d6] leading-tight">成活率</div>
         <div class="mt-0.5">
-          <span class="num-highlight text-[14px] text-[#4ade80]">{{ data.survivalRate }}</span>
+          <span class="num-highlight text-[16px] text-[#4ade80] leading-tight">{{ data.survivalRate }}</span>
         </div>
       </div>
     </div>
@@ -67,15 +67,15 @@ const chartOptions = computed<EChartsOption>(() => {
   return {
     grid: {
       top: 10,
-      right: 12,
-      bottom: 18,
-      left: 28
+      right: 14,
+      bottom: 20,
+      left: 32
     },
     tooltip: {
       trigger: 'axis',
       backgroundColor: 'rgba(6, 26, 58, 0.95)',
       borderColor: 'rgba(0, 229, 255, 0.5)',
-      textStyle: { color: '#e2f1ff', fontSize: 11 },
+      textStyle: { color: '#e2f1ff', fontSize: 14 },
       formatter: (params: any) => {
         const p = Array.isArray(params) ? params[0] : params
         const st = stages[p.dataIndex]
@@ -94,7 +94,7 @@ const chartOptions = computed<EChartsOption>(() => {
       data: stages.map((s) => s.dayLabel),
       axisLine: { lineStyle: { color: 'rgba(0, 168, 255, 0.25)' } },
       axisTick: { show: false },
-      axisLabel: { color: '#6e96bf', fontSize: 10, margin: 5 }
+      axisLabel: { color: '#6e96bf', fontSize: 12, margin: 5 }
     },
     yAxis: {
       type: 'value',
@@ -104,7 +104,7 @@ const chartOptions = computed<EChartsOption>(() => {
       axisLine: { show: false },
       axisTick: { show: false },
       splitLine: { lineStyle: { color: 'rgba(0, 168, 255, 0.12)', type: 'dashed' } },
-      axisLabel: { color: '#6e96bf', fontSize: 10 }
+      axisLabel: { color: '#6e96bf', fontSize: 12 }
     },
     series: [
       {

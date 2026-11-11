@@ -12,23 +12,33 @@
       style="box-shadow: inset 0 0 46px 14px rgba(3, 14, 34, 0.78)"
     />
 
-    <!-- HUD 控制栏与底部铭牌/备案信息 -->
+    <!-- HUD 控制栏与底部铭牌/备案信息（含顶部双场景切换 Tabs） -->
     <StageHudControls
       :farm-name="farmName"
+      :scene-tab="sceneTab"
       :is-auto-rotate="isAutoRotate"
       :show-pulse-effect="showPulseEffect"
+      @change-scene-tab="switchSceneTab"
       @toggle-auto-rotate="toggleAutoRotate"
       @reset-camera="resetCameraView"
       @toggle-pulse="togglePulseEffect"
     />
 
-    <!-- 3D 空间锚定点位气泡与实时监测详情弹窗 -->
+    <!-- 场景 1：3D 孪生厂区空间锚定点位气泡与实时监测详情弹窗 -->
     <StageMarkerOverlay
+      v-if="sceneTab === 'farm'"
       :markers="markers"
       :projected-markers="projectedMarkers"
       :active-marker="activeMarker"
       @select-marker="selectMarker"
       @clear-marker="clearActiveMarker"
+    />
+
+    <!-- 场景 2：贵州省及周边产销辐射 3D 点线地图图例与仓库供货详情弹窗 -->
+    <StageMapOverlay
+      v-else
+      :selected-hub-id="selectedHubId"
+      @select-hub="selectMapHub"
     />
   </div>
 </template>
@@ -38,6 +48,7 @@ import { ref } from 'vue'
 import type { StageMarker } from '@/mock/dashboardData'
 import StageHudControls from './components/StageHudControls.vue'
 import StageMarkerOverlay from './components/StageMarkerOverlay.vue'
+import StageMapOverlay from './components/StageMapOverlay.vue'
 import { useThreeStage } from './three/useThreeStage'
 
 const props = defineProps<{
@@ -49,12 +60,16 @@ const containerRef = ref<HTMLDivElement | null>(null)
 const canvasWrapRef = ref<HTMLDivElement | null>(null)
 
 const {
+  sceneTab,
+  selectedHubId,
   activeMarker,
   isAutoRotate,
   showPulseEffect,
   projectedMarkers,
   selectMarker,
   clearActiveMarker,
+  switchSceneTab,
+  selectMapHub,
   resetCameraView,
   toggleAutoRotate,
   togglePulseEffect
