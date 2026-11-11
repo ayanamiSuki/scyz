@@ -1,5 +1,5 @@
 <template>
-  <PanelCard title="投喂管理" custom-class="h-[296px]" body-class="px-3.5 py-2 flex flex-col">
+  <PanelCard title="投喂管理" custom-class="h-[468px]" body-class="px-3.5 py-2 flex flex-col">
     <template #extra>
       <span class="text-[14px] text-[#00e5ff] font-medium">{{ data.stageTitle }}</span>
     </template>

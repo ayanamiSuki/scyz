@@ -5,8 +5,9 @@
       <!-- 左侧栏：基地总览 + 环境监测 + 设备状态 -->
       <aside class="w-[440px] shrink-0 flex flex-col gap-2.5 h-full">
         <LeftOverview :data="farmData.overview" />
+        <RightScale :data="farmData.baseIntro" />
         <LeftEnvMonitor :metrics="farmData.envMetrics" :trends="farmData.envTrends" />
-        <LeftDevice :data="farmData.deviceStatus" />
+        
       </aside>
 
       <!-- 中间主视觉栏：全景孪生基地 + 底部4路实时视频 -->
@@ -17,8 +18,8 @@
 
       <!-- 右侧栏：基地介绍 + 生长分析 + 投喂管理 + 预警概览 -->
       <aside class="w-[476px] shrink-0 flex flex-col gap-2.5 h-full">
-        <RightScale :data="farmData.baseIntro" />
-        <RightGrowth :data="farmData.growth" />
+        <LeftDevice :data="farmData.deviceStatus" />
+        <!-- <RightGrowth :data="farmData.growth" /> -->
         <RightFeeding :data="farmData.feeding" />
         <RightWarning :data="farmData.warnings" />
       </aside>
