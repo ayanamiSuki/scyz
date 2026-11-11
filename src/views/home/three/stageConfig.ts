@@ -12,8 +12,8 @@ export interface ProjectedMarkerPos {
   visible: boolean
 }
 
-// 默认全局鸟瞰视角（微调视角中心以完整呈现左侧新增【设备房】与5大分区）
-export const DEFAULT_CAM_POS = new THREE.Vector3(-3, 46, 72)
+// 默认全局鸟瞰视角（抬高视角与距离，完整呈现全厂区及周边地貌）
+export const DEFAULT_CAM_POS = new THREE.Vector3(-3, 62, 86)
 export const DEFAULT_TARGET = new THREE.Vector3(-3, 1, 3)
 
 // 5大核心分区对应的 3D 世界坐标与最佳聚焦相机位置（严格对齐手绘规划图）

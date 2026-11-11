@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js'
-import { CSS3DObject, CSS3DSprite } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
+import { CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js'
 import {
   GUIZHOU_CITY_REGIONS,
   HUAIHUA_DISTRICT_REGIONS,
@@ -290,44 +290,43 @@ function createRegionSurfaceCss3DLabel(
 }
 
 /**
- * 第二层（CSS3DSprite）：创建黄平重安镇总厂与三大枢纽仓的 3D 精灵交互立牌
- * 始终朝向镜头且具备真实的 3D 近大远小空间透视感
+ * 第二层（CSS2DObject）：创建黄平重安镇总厂核心立牌（置顶最高优先级 z-index:35，绝不被区县标签遮挡）
  */
-function createHqCss3DSprite(
+function createHqCss2DLabel(
   name: string,
   worldPos: THREE.Vector3,
   onSelectHub?: (hubId: HubId | 'all') => void
-): CSS3DSprite {
+): CSS2DObject {
   const rootEl = document.createElement('div')
-  rootEl.style.pointerEvents = 'none'
-  rootEl.style.userSelect = 'none'
+  rootEl.style.cssText = 'position:relative; pointer-events:none; user-select:none; z-index:35;'
 
   const innerEl = document.createElement('div')
   innerEl.style.cssText = `
-    transform: translateY(-50%);
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 5px 12px;
-    border-radius: 6px;
-    background: linear-gradient(90deg, rgba(7, 42, 82, 0.95), rgba(11, 59, 110, 0.95), rgba(7, 42, 82, 0.95));
+    gap: 7px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(8, 38, 77, 0.96) 0%, rgba(13, 63, 122, 0.96) 50%, rgba(8, 38, 77, 0.96) 100%);
     border: 1.5px solid #ffe066;
     color: #fffbeb;
-    box-shadow: 0 0 18px rgba(255, 224, 102, 0.58);
+    box-shadow: 0 0 22px rgba(255, 224, 102, 0.72), 0 4px 14px rgba(0, 0, 0, 0.6);
     cursor: pointer;
     pointer-events: auto;
     white-space: nowrap;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
   `
   innerEl.innerHTML = `
-    <span style="width: 9px; height: 9px; border-radius: 9999px; background: #ffe066; box-shadow: 0 0 8px #ffe066; display: inline-block;"></span>
-    <span style="font-size: 14px; font-weight: 700; letter-spacing: 1px;">★ ${name}</span>
+    <span style="width: 10px; height: 10px; border-radius: 9999px; background: #ffe066; box-shadow: 0 0 10px #ffe066; display: inline-block;"></span>
+    <span style="font-size: 14px; font-weight: 700; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.85);">★ ${name}</span>
   `
   innerEl.addEventListener('mouseenter', () => {
-    innerEl.style.transform = 'translateY(-50%) scale(1.06)'
+    innerEl.style.transform = 'scale(1.08)'
+    innerEl.style.boxShadow = '0 0 28px rgba(255, 224, 102, 0.9), 0 6px 18px rgba(0, 0, 0, 0.65)'
   })
   innerEl.addEventListener('mouseleave', () => {
-    innerEl.style.transform = 'translateY(-50%) scale(1)'
+    innerEl.style.transform = 'scale(1)'
+    innerEl.style.boxShadow = '0 0 22px rgba(255, 224, 102, 0.72), 0 4px 14px rgba(0, 0, 0, 0.6)'
   })
   innerEl.addEventListener('click', (e) => {
     e.stopPropagation()
@@ -336,31 +335,32 @@ function createHqCss3DSprite(
 
   rootEl.appendChild(innerEl)
 
-  const sprite = new CSS3DSprite(rootEl)
-  sprite.position.copy(worldPos)
-  sprite.scale.set(0.088, 0.088, 0.088)
-  return sprite
+  const obj = new CSS2DObject(rootEl)
+  obj.position.copy(worldPos)
+  return obj
 }
 
-function createHubCss3DSprite(
+/**
+ * 第二层（CSS2DObject）：创建三大枢纽仓核心交互立牌（次高优先级 z-index:25，高于所有区县标签）
+ */
+function createHubCss2DLabel(
   hub: MapHubWarehouse,
   worldPos: THREE.Vector3,
   onSelectHub?: (hubId: HubId | 'all') => void
-): { sprite: CSS3DSprite; updateActive: (selectedHubId: HubId | 'all') => void } {
+): { obj: CSS2DObject; updateActive: (selectedHubId: HubId | 'all') => void } {
   const rootEl = document.createElement('div')
-  rootEl.style.pointerEvents = 'none'
-  rootEl.style.userSelect = 'none'
+  rootEl.style.cssText = 'position:relative; pointer-events:none; user-select:none; z-index:25;'
 
   const innerEl = document.createElement('div')
   const isPlanned = hub.status === 'planned'
   const dotColor = isPlanned ? '#fbbf24' : '#00e5ff'
-  const badgeBg = isPlanned ? 'rgba(251, 191, 36, 0.25)' : 'rgba(0, 229, 255, 0.22)'
+  const badgeBg = isPlanned ? 'rgba(251, 191, 36, 0.28)' : 'rgba(0, 229, 255, 0.25)'
   const badgeText = isPlanned ? '#fef08a' : '#7dd3fc'
 
   innerEl.innerHTML = `
     <span style="width: 8px; height: 8px; border-radius: 9999px; background: ${dotColor}; box-shadow: 0 0 8px ${dotColor}; display: inline-block;"></span>
-    <span style="font-size: 14px; font-weight: 700; letter-spacing: 0.5px;">${hub.name}</span>
-    <span style="font-size: 11px; padding: 1px 6px; border-radius: 9999px; background: ${badgeBg}; color: ${badgeText};">
+    <span style="font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 1px 3px rgba(0,0,0,0.85);">${hub.name}</span>
+    <span style="font-size: 11px; padding: 1.5px 7px; border-radius: 9999px; background: ${badgeBg}; color: ${badgeText}; font-weight: 500;">
       ${isPlanned ? '2027规划' : '已合作'}
     </span>
   `
@@ -369,37 +369,37 @@ function createHubCss3DSprite(
     const scaleVal = isSelected ? 1.12 : isHovered ? 1.06 : 1
     if (isPlanned) {
       innerEl.style.cssText = `
-        transform: translateY(-50%) scale(${scaleVal});
+        transform: scale(${scaleVal});
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 11px;
+        padding: 5px 12px;
         border-radius: 9999px;
-        background: ${isSelected ? 'rgba(66, 40, 6, 0.96)' : 'rgba(46, 28, 5, 0.90)'};
-        border: 1.5px solid ${isSelected ? '#fbbf24' : 'rgba(251, 191, 36, 0.78)'};
+        background: ${isSelected ? 'rgba(66, 40, 6, 0.98)' : 'rgba(46, 28, 5, 0.92)'};
+        border: 1.5px solid ${isSelected ? '#fbbf24' : 'rgba(251, 191, 36, 0.85)'};
         color: ${isSelected ? '#fef08a' : '#fde68a'};
-        box-shadow: ${isSelected ? '0 0 16px rgba(251, 191, 36, 0.6)' : '0 4px 10px rgba(0, 0, 0, 0.5)'};
+        box-shadow: ${isSelected ? '0 0 20px rgba(251, 191, 36, 0.75)' : '0 4px 12px rgba(0, 0, 0, 0.55)'};
         cursor: pointer;
         pointer-events: auto;
         white-space: nowrap;
-        transition: all 0.25s ease;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
       `
     } else {
       innerEl.style.cssText = `
-        transform: translateY(-50%) scale(${scaleVal});
+        transform: scale(${scaleVal});
         display: flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 11px;
+        padding: 5px 12px;
         border-radius: 9999px;
-        background: ${isSelected ? 'rgba(3, 57, 108, 0.96)' : 'rgba(5, 35, 71, 0.90)'};
-        border: 1.5px solid ${isSelected ? '#00e5ff' : 'rgba(0, 229, 255, 0.78)'};
+        background: ${isSelected ? 'rgba(3, 57, 108, 0.98)' : 'rgba(5, 35, 71, 0.92)'};
+        border: 1.5px solid ${isSelected ? '#00e5ff' : 'rgba(0, 229, 255, 0.85)'};
         color: ${isSelected ? '#ffffff' : '#e0f7ff'};
-        box-shadow: ${isSelected ? '0 0 16px rgba(0, 229, 255, 0.65)' : '0 4px 10px rgba(0, 0, 0, 0.5)'};
+        box-shadow: ${isSelected ? '0 0 20px rgba(0, 229, 255, 0.75)' : '0 4px 12px rgba(0, 0, 0, 0.55)'};
         cursor: pointer;
         pointer-events: auto;
         white-space: nowrap;
-        transition: all 0.25s ease;
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background 0.25s ease;
       `
     }
   }
@@ -416,12 +416,11 @@ function createHubCss3DSprite(
 
   rootEl.appendChild(innerEl)
 
-  const sprite = new CSS3DSprite(rootEl)
-  sprite.position.copy(worldPos)
-  sprite.scale.set(0.088, 0.088, 0.088)
+  const obj = new CSS2DObject(rootEl)
+  obj.position.copy(worldPos)
 
   return {
-    sprite,
+    obj,
     updateActive: (selectedHubId: HubId | 'all') => {
       currentSelected = selectedHubId === hub.id
       applyStyle(currentSelected, false)
@@ -431,15 +430,14 @@ function createHubCss3DSprite(
 
 /**
  * 第三层（CSS2DObject）：创建下辖辐射区县标签
- * 始终水平正对屏幕、字迹锐利清晰，不因透视变形而模糊
+ * 基础层级 z-index:10，绝对低于总厂与各枢纽仓，pointer-events:none 绝不干扰点击与交互
  */
 function createCityCss2DLabel(
   city: MapTargetCity,
   worldPos: THREE.Vector3
 ): { obj: CSS2DObject; updateState: (selectedHubId: HubId | 'all') => void } {
   const rootEl = document.createElement('div')
-  rootEl.style.pointerEvents = 'none'
-  rootEl.style.userSelect = 'none'
+  rootEl.style.cssText = 'position:relative; pointer-events:none; user-select:none; z-index:10;'
 
   const innerEl = document.createElement('span')
   innerEl.textContent = city.name
@@ -450,43 +448,43 @@ function createCityCss2DLabel(
     if (isPlanned) {
       innerEl.style.cssText = `
         display: inline-block;
-        transform: translateY(-100%);
         padding: 1.5px 6px;
         border-radius: 4px;
         font-size: 11px;
         white-space: nowrap;
-        background: rgba(42, 28, 5, 0.84);
-        border: 1px solid rgba(251, 191, 36, 0.55);
+        background: rgba(42, 28, 5, 0.82);
+        border: 1px solid rgba(251, 191, 36, 0.5);
         color: #fde68a;
         transition: all 0.25s ease;
+        pointer-events: none;
       `
     } else if (isFocusedHub) {
       innerEl.style.cssText = `
         display: inline-block;
-        transform: translateY(-100%);
-        padding: 2px 6.5px;
+        padding: 2px 7px;
         border-radius: 4px;
-        font-size: 11.5px;
+        font-size: 11px;
         font-weight: 600;
         white-space: nowrap;
-        background: rgba(4, 36, 74, 0.92);
+        background: rgba(4, 36, 74, 0.90);
         border: 1px solid rgba(0, 229, 255, 0.8);
         color: #ffffff;
         box-shadow: 0 0 8px rgba(0, 229, 255, 0.35);
         transition: all 0.25s ease;
+        pointer-events: none;
       `
     } else {
       innerEl.style.cssText = `
         display: inline-block;
-        transform: translateY(-100%);
         padding: 1.5px 5.5px;
         border-radius: 4px;
-        font-size: 11px;
+        font-size: 10.5px;
         white-space: nowrap;
-        background: rgba(4, 24, 52, 0.76);
-        border: 1px solid rgba(56, 189, 248, 0.32);
-        color: rgba(186, 230, 253, 0.92);
+        background: rgba(4, 24, 52, 0.72);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        color: rgba(186, 230, 253, 0.9);
         transition: all 0.25s ease;
+        pointer-events: none;
       `
     }
   }
@@ -524,7 +522,7 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
   const beaconColumns: THREE.Mesh[] = []
 
   const regionLabelInners: HTMLDivElement[] = []
-  const hubSpriteControllers: Array<{ updateActive: (selectedHubId: HubId | 'all') => void }> = []
+  const hubLabelControllers: Array<{ updateActive: (selectedHubId: HubId | 'all') => void }> = []
   const cityLabelControllers: Array<{ updateState: (selectedHubId: HubId | 'all') => void }> = []
   const allCssObjects: THREE.Object3D[] = []
 
@@ -743,14 +741,14 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
     pulseRings.push(ringMesh)
   }
 
-  // 第二层（CSS3DSprite）：总厂核心立牌
-  const hqSprite = createHqCss3DSprite(
+  // 第二层（CSS2DObject）：总厂核心立牌（置顶 z-index:35）
+  const hqLabel = createHqCss2DLabel(
     HQ_ORIGIN_NODE.shortName,
     new THREE.Vector3(hqPos.x, hqSurfaceY + 9.2, hqPos.z),
     onSelectHub
   )
-  rootGroup.add(hqSprite)
-  allCssObjects.push(hqSprite)
+  rootGroup.add(hqLabel)
+  allCssObjects.push(hqLabel)
 
   // 发光流光球共享贴图材质
   const glowSpriteTex = createGlowTexture('#ffffff')
@@ -789,15 +787,15 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
     hubGroup.add(hubRing)
     pulseRings.push(hubRing)
 
-    // 第二层（CSS3DSprite）：三大枢纽仓交互立牌（挂在 rootGroup 上确保随时可点切仓）
-    const hubSpriteCtrl = createHubCss3DSprite(
+    // 第二层（CSS2DObject）：三大枢纽仓交互立牌（次高优先级 z-index:25，高于所有区县）
+    const hubLabelCtrl = createHubCss2DLabel(
       hub,
-      new THREE.Vector3(hubPos.x, hubBaseY + 6.0, hubPos.z),
+      new THREE.Vector3(hubPos.x, hubBaseY + 5.8, hubPos.z),
       onSelectHub
     )
-    rootGroup.add(hubSpriteCtrl.sprite)
-    hubSpriteControllers.push(hubSpriteCtrl)
-    allCssObjects.push(hubSpriteCtrl.sprite)
+    rootGroup.add(hubLabelCtrl.obj)
+    hubLabelControllers.push(hubLabelCtrl)
+    allCssObjects.push(hubLabelCtrl.obj)
 
     // 6.2 第一级主干飞线：黄平重安镇（中心厂区） ➔ 当前枢纽仓
     const tier1Mid = new THREE.Vector3()
@@ -883,6 +881,12 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
       const cityBaseY =
         (isCityAdjacent ? ADJACENT_EXTRUDE_HEIGHT : GUIZHOU_EXTRUDE_HEIGHT) + 0.15
       const cityPos = lngLatToVector3(city.lngLat[0], city.lngLat[1], cityBaseY)
+      const dist = hubPos.distanceTo(cityPos)
+
+      // 邻近与同名节点去重：若区县与枢纽仓坐标完全重叠（如凯里仓与凯里市），跳过冗余区县标签与 0 长飞线
+      if (dist < 0.2) {
+        return
+      }
 
       // 城市末端光柱与底座圆点
       const cityPinGeo = new THREE.CylinderGeometry(0.06, 0.14, 1.8, 8)
@@ -906,7 +910,6 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
       hubGroup.add(dotMesh)
 
       // 二级贝塞尔飞线弧（从中心仓飞向目标区县）
-      const dist = hubPos.distanceTo(cityPos)
       const mid = new THREE.Vector3().addVectors(hubPos, cityPos).multiplyScalar(0.5)
       mid.y = Math.max(hubBaseY, cityBaseY) + Math.max(3.2, dist * 0.36)
 
@@ -966,10 +969,10 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
         tier: 2
       })
 
-      // 第三层（CSS2DObject）：区县级清晰正对屏幕标签
+      // 第三层（CSS2DObject）：区县级清晰正对屏幕标签（基础层级 z-index:10，贴合柱顶）
       const cityLabelCtrl = createCityCss2DLabel(
         city,
-        new THREE.Vector3(cityPos.x, cityBaseY + 2.0, cityPos.z)
+        new THREE.Vector3(cityPos.x, cityBaseY + 1.85, cityPos.z)
       )
       hubGroup.add(cityLabelCtrl.obj)
       cityLabelControllers.push(cityLabelCtrl)
@@ -982,7 +985,7 @@ export function buildGuizhouRadiationMap(onSelectHub?: (hubId: HubId | 'all') =>
     for (const innerEl of regionLabelInners) {
       innerEl.style.opacity = regionOpacity
     }
-    for (const ctrl of hubSpriteControllers) {
+    for (const ctrl of hubLabelControllers) {
       ctrl.updateActive(selectedHubId)
     }
     for (const ctrl of cityLabelControllers) {

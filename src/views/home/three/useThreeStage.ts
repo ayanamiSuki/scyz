@@ -31,7 +31,7 @@ export function useThreeStage(
   const sceneTab = ref<'farm' | 'map'>('farm')
   const selectedHubId = ref<HubId | 'all'>('all')
   const activeMarker = ref<StageMarker | null>(null)
-  const isAutoRotate = ref(false)
+  const isAutoRotate = ref(true)
   const showPulseEffect = ref(true)
 
   // 厂区模式下每个点位实时投影后的屏幕像素坐标
@@ -165,14 +165,14 @@ export function useThreeStage(
     renderer.toneMappingExposure = 0.96
     wrap.appendChild(renderer.domElement)
 
-    // 初始化 CSS3DRenderer（用于贴地立体地州市名与总厂/三大枢纽仓 3D 精灵立牌）
+    // 初始化 CSS3DRenderer（用于贴地 3D 浮雕地州市立体名称）
     css3dRenderer = new CSS3DRenderer()
     css3dRenderer.setSize(width, height)
     css3dRenderer.domElement.style.cssText =
       'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:5;display:none;overflow:hidden;'
     wrap.appendChild(css3dRenderer.domElement)
 
-    // 初始化 CSS2DRenderer（用于下辖辐射县市清晰正对屏幕标签）
+    // 初始化 CSS2DRenderer（用于总厂立牌 z-index:35、三大枢纽仓立牌 z-index:25 及区县标签 z-index:10）
     css2dRenderer = new CSS2DRenderer()
     css2dRenderer.setSize(width, height)
     css2dRenderer.domElement.style.cssText =
