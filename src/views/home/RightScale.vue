@@ -15,7 +15,7 @@
     </div>
 
     <!-- 中部基地介绍正文 -->
-    <p class="text-[14px] description text-[#cfe8ff] leading-[1.5] m-0 line-clamp-3">
+    <p class="text-[14px] description text-[#cfe8ff] leading-[1.5] m-0 line-clamp-3" :title="data.description">
       {{ data.description }}
     </p>
 

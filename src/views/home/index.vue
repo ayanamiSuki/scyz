@@ -19,7 +19,7 @@
       <!-- 右侧栏：基地介绍 + 生长分析 + 投喂管理 + 预警概览 -->
       <aside class="w-[476px] shrink-0 flex flex-col gap-2.5 h-full">
         <LeftDevice :data="farmData.deviceStatus" />
-        <!-- <RightGrowth :data="farmData.growth" /> -->
+        <RightGrowth :data="farmData.growth" />
         <RightFeeding :data="farmData.feeding" />
         <RightWarning :data="farmData.warnings" />
       </aside>

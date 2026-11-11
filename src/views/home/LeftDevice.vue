@@ -1,5 +1,5 @@
 <template>
-  <PanelCard title="设备状态" custom-class="flex-1 min-h-0" body-class="px-3.5 py-2.5 flex items-center">
+  <PanelCard title="设备状态" custom-class="min-h-0" body-class="px-3.5 p-2.5 flex items-center">
     <!-- 左侧环形图 -->
     <div class="w-[144px] h-[144px] relative shrink-0">
       <BaseChart :options="chartOptions" />

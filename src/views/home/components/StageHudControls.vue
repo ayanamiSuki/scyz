@@ -5,17 +5,17 @@
       class="flex items-center gap-1.5 px-3 py-1 rounded bg-[#051b3b]/80 border border-[#00c6ff]/35 backdrop-blur-sm text-[13px] text-[#bfe3ff]"
     >
       <span class="w-2 h-2 rounded-full bg-[#00e5ff] animate-pulse" />
-      <span>{{ sceneTab === 'farm' ? '3D 实景孪生引擎' : '3D 产销辐射引擎' }}</span>
-      <span class="text-[#00e5ff]/60">|</span>
+      <!-- <span>{{ sceneTab === 'farm' ? '3D 实景孪生引擎' : '3D 产销辐射引擎' }}</span> -->
+      <!-- <span class="text-[#00e5ff]/60">|</span> -->
       <span class="text-[#7da8d6]">
-        {{ sceneTab === 'farm' ? '拖拽旋转 · 滚轮缩放 · 点击点位聚焦' : '拖拽旋转 · 点击枢纽仓聚焦辐射网' }}
+        {{ sceneTab === 'farm' ? '拖拽旋转·滚轮缩放·点击点位聚焦' : '拖拽旋转 · 点击枢纽仓聚焦辐射网' }}
       </span>
     </div>
   </div>
 
   <!-- 顶部居中：双场景切换 Tabs（3D 孪生厂区 / 产销辐射地图） -->
   <div
-    class="absolute left-1/2 -translate-x-1/2  top-12 z-30 flex items-center p-1 rounded-md bg-[#04152d]/90 border border-[#00c6ff]/50 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.65)]"
+    class="absolute left-1/2 -translate-x-1/2  top-2.5 z-30 flex items-center p-1 rounded-md bg-[#04152d]/90 border border-[#00c6ff]/50 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.65)]"
   >
     <button
       type="button"
@@ -57,7 +57,7 @@
     class="absolute right-3.5 top-3 z-10 px-3.5 py-1 rounded bg-[#051b3b]/80 border border-[#00c6ff]/40 backdrop-blur-sm text-[13px] font-semibold text-[#d8f0ff] tracking-wider pointer-events-none"
     style="box-shadow: 0 2px 12px rgba(0, 0, 0, 0.55)"
   >
-    {{ farmName }} · {{ sceneTab === 'farm' ? '陆基循环水 3D 孪生基地' : '贵州黄平重安镇产销辐射网' }}
+    {{ farmName }} · {{ sceneTab === 'farm' ? '3D孪生基地' : '产销辐射网' }}
   </div>
 
   <!-- 左下角：3D 视角与特效控制栏 -->
