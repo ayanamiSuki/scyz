@@ -8,11 +8,11 @@
         <slot name="extra">
           <span
             v-if="showArrow"
-            class="text-[#6ca0d4] hover:text-[#00e5ff] cursor-pointer text-xs flex items-center gap-0.5 transition-colors"
+            class="text-[#6ca0d4] hover:text-[#00e5ff] cursor-pointer text-[14px] flex items-center gap-0.5 transition-colors"
             @click="$emit('more')"
           >
-            <span v-if="moreText" class="text-[11px]">{{ moreText }}</span>
-            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <span v-if="moreText" class="text-[14px]">{{ moreText }}</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </span>

@@ -224,115 +224,73 @@ export const DASHBOARD_DATA_MAP: Record<string, FarmDashboardData> = {
     },
     markers: [
       {
-        id: 'm-greenhouse-main',
-        name: '保温养殖大棚',
+        id: 'm-shrimp-main',
+        name: '养虾池',
         type: 'cage',
-        x: 48,
-        y: 35,
+        x: 52,
+        y: 36,
         status: '运行中',
-        detail: '大跨度钢结构保温循环水主养车间，配置高密度水泥方形对虾池与恒温水循环管网。',
+        detail: '主区大跨度保温循环水养虾池群，集成水质在线监测、精准自动投喂与底部微孔纳米曝气系统。',
         metrics: [
           { label: '在养虾池', value: '204 个' },
-          { label: '车间水温', value: '28.9 ℃' },
+          { label: '池水均温', value: '28.9 ℃' },
           { label: '溶解氧', value: '8.5 mg/L' }
         ]
       },
       {
-        id: 'm-front-tanks',
-        name: '前区水泥方池群',
+        id: 'm-shrimp-front',
+        name: '养虾池',
         type: 'cage',
-        x: 28,
-        y: 72,
-        status: '正常',
-        detail: '前排3×18矩阵式钢筋混凝土方形标粗与轮养池群，配备独立底排污与微孔曝气系统。',
+        x: 34,
+        y: 66,
+        status: '运行中',
+        detail: '前区高标准钢筋混凝土方形养虾池矩阵，配备独立中央底排污、恒温水循环与高密度轮养系统。',
         metrics: [
-          { label: '池体数量', value: '54 个' },
+          { label: '在养虾池', value: '54 个' },
           { label: '当前阶段', value: 'PL12标粗' },
           { label: '水体盐度', value: '11.0 ‰' }
         ]
       },
       {
-        id: 'm-office-building',
-        name: '综合管理中控楼',
+        id: 'm-equipment-room',
+        name: '设备房',
+        type: 'warehouse',
+        x: 16,
+        y: 62,
+        status: '运行中',
+        detail: '基地综合动力与物资保障中心，内设原料仓库、恒温增温设备间、高压罗茨增氧设备间及标准饲料仓库。',
+        metrics: [
+          { label: '增温/增氧', value: '全负荷运行' },
+          { label: '原料仓库', value: '库存充足' },
+          { label: '饲料仓库', value: '恒温除湿' }
+        ]
+      },
+      {
+        id: 'm-management-bldg',
+        name: '管理用房',
         type: 'monitor',
         x: 72,
-        y: 66,
+        y: 58,
         status: '正常',
-        detail: '双层混凝土综合管理与数字孪生中控大楼，内设水质化验室、大数据中心与配电控制室。',
+        detail: '双层现代化综合管理大楼，集成全厂数字孪生监控中心、水质与病害检测实验中心及员工生活中心。',
         metrics: [
-          { label: '视频接入', value: '36 路' },
-          { label: '水质化验', value: '每日3次' },
-          { label: '值班状态', value: '正常在岗' }
+          { label: '监控中心', value: '36路在线' },
+          { label: '实验中心', value: '每日3检' },
+          { label: '生活中心', value: '正常保障' }
         ]
       },
       {
-        id: 'm-ras-room',
-        name: '循环水处理中心',
-        type: 'cabin',
-        x: 34,
-        y: 52,
-        status: '运行中',
-        detail: '全天候RAS循环水处理区，集成滚筒微滤机、蛋白质分离器、生物移动床与紫外杀菌系统。',
-        metrics: [
-          { label: '循环水体', value: '9600 m³' },
-          { label: '氨氮控制', value: '0.12 mg/L' },
-          { label: '日换水率', value: '< 3 %' }
-        ]
-      },
-      {
-        id: 'm-feeder-station',
-        name: '精准拌料投喂站',
-        type: 'warehouse',
-        x: 62,
-        y: 48,
-        status: '运行中',
-        detail: '虾苗自动称重拌料与定时投喂工作站，精准配比1/2/3号开口料与黄芪多糖、肝肠肽等保健剂。',
-        metrics: [
-          { label: '今日投喂', value: '2580 g' },
-          { label: '投喂频次', value: '6 餐/日' },
-          { label: '当前日龄', value: '第 13 天' }
-        ]
-      },
-      {
-        id: 'm-aerator-station',
-        name: '罗茨鼓风增氧站',
-        type: 'aerator',
-        x: 20,
-        y: 38,
-        status: '运行中',
-        detail: '高压变频罗茨风机房，向全基地258个独立养殖池底部纳米曝气盘持续供氧。',
-        metrics: [
-          { label: '运行风机', value: '12 台' },
-          { label: '供气压力', value: '0.45 MPa' },
-          { label: '池均溶氧', value: '8.5 mg/L' }
-        ]
-      },
-      {
-        id: 'm-env-station',
-        name: '在线水质监测站',
-        type: 'env',
-        x: 52,
-        y: 56,
+        id: 'm-leisure-deck',
+        name: '休闲平台',
+        type: 'leisure',
+        x: 72,
+        y: 78,
         status: '正常',
-        detail: '多参数水质在线传感器阵列，实时监测水温、pH、溶氧、盐度及钙镁钾离子浓度。',
+        detail: '管理用房前庭生态景观休闲平台，配置现代遮阳廊架、户外休憩区与绿化花箱，兼顾日常休憩与访客接待。',
         metrics: [
-          { label: '钙硬度', value: '210 mg/L' },
-          { label: '镁浓度', value: '640 mg/L' },
-          { label: '钾浓度', value: '205 mg/L' }
-        ]
-      },
-      {
-        id: 'm-camera-east',
-        name: '园区全景云台',
-        type: 'camera',
-        x: 84,
-        y: 52,
-        status: '正常',
-        detail: '园区东侧道路与车间走廊高清AI球机，支持人员作业安全监测与虾池巡检。',
-        metrics: [
-          { label: '在线设备', value: '65 台' },
-          { label: '告警设备', value: '0 台' },
-          { label: '录像状态', value: '正常存储' }
+          { label: '功能定位', value: '休憩/接待' },
+          { label: '景观照明', value: '已开启' },
+          { label: '环境指数', value: '优' }
         ]
       }
     ],

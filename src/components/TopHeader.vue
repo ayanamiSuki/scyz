@@ -160,7 +160,8 @@
           class="text-[24px] font-bold tracking-[4px] text-white m-0"
           style="text-shadow: 0 0 14px rgba(0, 229, 255, 0.75), 0 2px 4px rgba(0, 0, 0, 0.8);"
         >
-          贵州裕宸水产发展有限公司
+          <!-- 贵州裕宸水产发展有限公司 -->
+           重安对虾养殖示范基地
         </h1>
       </div>
 

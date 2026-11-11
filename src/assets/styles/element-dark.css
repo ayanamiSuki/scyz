@@ -9,20 +9,20 @@
   --el-table-row-hover-bg-color: rgba(0, 174, 255, 0.14);
   --el-table-border-color: rgba(0, 150, 255, 0.12);
   background-color: transparent !important;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .cockpit-table.el-table th.el-table__cell {
   background-color: rgba(0, 95, 190, 0.22) !important;
   border-bottom: 1px solid rgba(0, 168, 255, 0.2) !important;
-  padding: 3px 0 !important;
+  padding: 4px 0 !important;
   font-weight: 500;
   color: #7da8d6;
 }
 
 .cockpit-table.el-table td.el-table__cell {
   border-bottom: 1px solid rgba(0, 150, 255, 0.08) !important;
-  padding: 3.5px 0 !important;
+  padding: 4px 0 !important;
 }
 
 .cockpit-table.el-table .el-table__inner-wrapper::before {
@@ -30,8 +30,8 @@
 }
 
 .cockpit-table.el-table .cell {
-  padding: 0 4px !important;
-  line-height: 16px !important;
+  padding: 0 6px !important;
+  line-height: 20px !important;
   white-space: nowrap;
 }
 

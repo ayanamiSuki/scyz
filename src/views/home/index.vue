@@ -3,20 +3,20 @@
     <!-- 主体三列内容区：左栏 + 中栏（陆基孪生基地+实时视频） + 右栏 -->
     <main class="flex-1 min-h-0 flex gap-2.5 px-3 pt-2 pb-2.5">
       <!-- 左侧栏：基地总览 + 环境监测 + 设备状态 -->
-      <aside class="w-[336px] shrink-0 flex flex-col gap-2.5 h-full">
+      <aside class="w-[440px] shrink-0 flex flex-col gap-2.5 h-full">
         <LeftOverview :data="farmData.overview" />
         <LeftEnvMonitor :metrics="farmData.envMetrics" :trends="farmData.envTrends" />
         <LeftDevice :data="farmData.deviceStatus" />
       </aside>
 
-      <!-- 中间主视觉栏：全景孪生基地 + 底部6路实时视频 -->
+      <!-- 中间主视觉栏：全景孪生基地 + 底部4路实时视频 -->
       <section class="flex-1 min-w-0 flex flex-col gap-2.5 h-full">
         <CenterStage :farm-name="farmData.name" :markers="farmData.markers" />
         <CenterVideos :videos="farmData.videos" />
       </section>
 
       <!-- 右侧栏：基地介绍 + 生长分析 + 投喂管理 + 预警概览 -->
-      <aside class="w-[356px] shrink-0 flex flex-col gap-2.5 h-full">
+      <aside class="w-[476px] shrink-0 flex flex-col gap-2.5 h-full">
         <RightScale :data="farmData.baseIntro" />
         <RightGrowth :data="farmData.growth" />
         <RightFeeding :data="farmData.feeding" />
