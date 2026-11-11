@@ -33,15 +33,36 @@
 
           <!-- 悬浮播放指示图标 -->
           <div
-            class="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]"
+            class="play-mask absolute inset-0 flex flex-col items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
+            <!-- 播放按钮主体 -->
             <div
-              class="w-10 h-10 rounded-full bg-[#00e5ff]/85 text-[#021024] flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.6)] group-hover:scale-110 transition-transform"
+              class="play-core relative w-11 h-11 flex items-center justify-center transition-transform duration-300 group-hover:scale-105"
             >
-              <svg class="w-5 h-5 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+              <!-- 向外扩散的呼吸光环 -->
+              <span class="play-halo absolute inset-0 rounded-full border border-[#00e5ff]/50" />
+              <!-- 缓慢旋转的虚线环 -->
+              <span class="play-dash absolute -inset-[5px] rounded-full border border-dashed border-[#00e5ff]/35" />
+
+              <div
+                class="relative w-full h-full rounded-full flex items-center justify-center border border-[#00e5ff]/90 bg-[#021024]/60 backdrop-blur-[2px] shadow-[0_0_16px_rgba(0,229,255,0.5),inset_0_0_14px_rgba(0,229,255,0.28)] transition-all duration-300 group-hover:bg-[#00e5ff] group-hover:shadow-[0_0_26px_rgba(0,229,255,0.9),inset_0_0_10px_rgba(255,255,255,0.35)]"
+              >
+                <svg
+                  class="w-[15px] h-[15px] translate-x-[1.5px] text-[#00e5ff] drop-shadow-[0_0_6px_rgba(0,229,255,0.85)] transition-colors duration-300 group-hover:text-[#021024] group-hover:drop-shadow-none"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
             </div>
+
+            <!-- 操作提示文字 -->
+            <span
+              class="text-[10px] leading-none tracking-[0.18em] pl-[0.18em] text-[#d5f1ff] drop-shadow-[0_0_6px_rgba(0,229,255,0.7)]"
+            >
+              点击播放
+            </span>
           </div>
         </div>
 
@@ -213,3 +234,50 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', onKeydown)
 })
 </script>
+
+<style scoped>
+/* 悬浮遮罩：四周轻暗角 + 顶部青色微光，突出播放按钮 */
+.play-mask {
+  background: radial-gradient(
+      circle at 50% 48%,
+      rgba(0, 10, 26, 0.42) 0%,
+      rgba(0, 10, 26, 0.5) 55%,
+      rgba(0, 8, 20, 0.7) 100%
+    ),
+    linear-gradient(180deg, rgba(0, 229, 255, 0.1) 0%, transparent 50%);
+}
+
+/* 扩散光环 */
+@keyframes play-halo {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.75;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+/* 虚线环旋转 */
+@keyframes play-dash-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.play-halo {
+  animation: play-halo 2.4s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+.play-dash {
+  animation: play-dash-spin 9s linear infinite;
+}
+</style>
