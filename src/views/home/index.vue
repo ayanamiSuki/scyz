@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { reactive, computed, onMounted } from 'vue'
 import { DASHBOARD_DATA_MAP } from '@/mock/dashboardData'
 import LeftOverview from './LeftOverview.vue'
 import LeftEnvMonitor from './LeftEnvMonitor.vue'
@@ -44,5 +44,26 @@ const props = defineProps<{
   farmId: string
 }>()
 
-const farmData = computed(() => DASHBOARD_DATA_MAP[props.farmId] || DASHBOARD_DATA_MAP['farm-1'])
+const dynamicDataMap = reactive<Record<string, any>>({ ...DASHBOARD_DATA_MAP })
+
+const farmData = computed(() => dynamicDataMap[props.farmId] || dynamicDataMap['farm-1'] || DASHBOARD_DATA_MAP['farm-1'])
+
+async function loadLatestData() {
+  try {
+    let res = await fetch('/api/dashboard')
+    if (!res.ok) {
+      res = await fetch('/dashboardData.json')
+    }
+    if (res.ok) {
+      const data = await res.json()
+      Object.assign(dynamicDataMap, data)
+    }
+  } catch {
+    // 离线或服务未启动时自动回退本地兜底数据
+  }
+}
+
+onMounted(() => {
+  loadLatestData()
+})
 </script>

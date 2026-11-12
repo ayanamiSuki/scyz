@@ -12,12 +12,20 @@
       <p class="text-xs text-[#8ab4dc] mb-6">
         当前路由模块为预留空页面，核心可视化大屏功能已集成于【首页】。
       </p>
-      <router-link
-        to="/"
-        class="inline-flex items-center gap-1.5 px-5 py-2 rounded bg-[#0088ff]/30 hover:bg-[#00a8ff]/50 border border-[#00e5ff]/60 text-xs text-white no-underline transition-all"
-      >
-        <span>返回驾驶舱首页</span>
-      </router-link>
+      <div class="flex items-center justify-center gap-3">
+        <router-link
+          to="/"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#0088ff]/30 hover:bg-[#00a8ff]/50 border border-[#00e5ff]/60 text-xs text-white no-underline transition-all"
+        >
+          <span>返回驾驶舱首页</span>
+        </router-link>
+        <router-link
+          to="/data-manage"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded bg-[#00e5ff]/20 hover:bg-[#00e5ff]/30 border border-[#00e5ff] text-xs text-[#00e5ff] no-underline transition-all"
+        >
+          <span>进入数据配置管理</span>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>

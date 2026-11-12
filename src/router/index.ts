@@ -58,6 +58,12 @@ const router = createRouter({
       name: 'system',
       component: PlaceholderView,
       meta: { title: '系统管理' }
+    },
+    {
+      path: '/data-manage',
+      name: 'data-manage',
+      component: () => import('@/views/manage/index.vue'),
+      meta: { title: '数据配置管理' }
     }
   ]
 })

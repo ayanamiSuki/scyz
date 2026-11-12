@@ -8,24 +8,24 @@
     </template>
 
     <!-- 顶部核心定位标签 -->
-    <div class="flex flex-wrap items-center gap-2 shrink-0">
+    <!-- <div class="flex flex-wrap items-center gap-2 shrink-0">
       <span v-for="tag in data.tags" :key="tag" class="px-2.5 py-0.5 rounded text-[14px] bg-[#00a8ff]/15 border border-[#00e5ff]/35 text-[#8ce7ff]">
         {{ tag }}
       </span>
-    </div>
+    </div> -->
 
     <!-- 中部基地介绍正文 -->
-    <p class="text-[14px] description text-[#cfe8ff] leading-[1.5] m-0 line-clamp-3" :title="data.description">
+    <p class="text-[14px] description text-[#cfe8ff] leading-[1.5] m-0 " :title="data.description">
       {{ data.description }}
     </p>
 
     <!-- 底部3项核心指标亮点 -->
-    <div class="grid grid-cols-3 gap-2 pt-1.5 border-t border-[#00a8ff]/20 shrink-0">
+    <!-- <div class="grid grid-cols-3 gap-2 pt-1.5 border-t border-[#00a8ff]/20 shrink-0">
       <div v-for="item in data.highlights" :key="item.label" class="bg-[#041836]/75 itemx rounded px-2.5 py-1 border border-[#00a8ff]/20 flex items-center justify-between">
         <span class="text-[14px] text-[#7da8d6]">{{ item.label }}</span>
         <span class="num-highlight text-[18px] text-[#00e5ff] leading-none">{{ item.value }}</span>
       </div>
-    </div>
+    </div> -->
   </PanelCard>
 </template>
 
